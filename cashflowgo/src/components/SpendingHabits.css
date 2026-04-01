@@ -1,0 +1,36 @@
+/* Spending Habits Container */
+.spending-habits {
+    max-width: 1000px; /* Maximum width of the chart container */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+  }
+  
+  /* Heading Style */
+  .spending-habits h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+  
+  /* Chart Container */
+  .canvas-container {
+    position: relative;
+    height: 400px; /* Fixed height for the chart */
+    max-width: 100%; /* Ensure it stays responsive */
+    overflow: hidden; /* Prevent overflow issues */
+    margin: 0 auto;
+  }
+  
+  /* No Data Message */
+  .spending-habits p {
+    text-align: center;
+    font-size: 1rem;
+    color: gray;
+    font-style: italic;
+    margin-top: 15px;
+  }  

@@ -1,0 +1,100 @@
+.transactions-page {
+  font-family: 'Arial', sans-serif; /* Match navbar font */
+  padding: 20px;
+}
+
+.transactions-page h2 {
+  color: #2c3e50; /* Match navbar background */
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-transform: uppercase; /* Match navbar logo style */
+  letter-spacing: 1px;
+}
+
+.transactions-page table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+  margin-top: 10px;
+}
+
+.transactions-page th,
+.transactions-page td {
+  border: 1px solid #ddd; /* Match recent-transactions borders */
+  padding: 12px; /* Increased padding for readability */
+  text-align: left; /* Consistent alignment */
+}
+
+.transactions-page th {
+  background-color: #34495e; /* Match navbar hover background */
+  color: white; /* High contrast for header text */
+  text-transform: uppercase; /* Match navbar header style */
+}
+
+.transactions-page td {
+  background-color: #f8f9fa; /* Light gray row background */
+  color: #2c3e50; /* Dark text for better readability */
+}
+
+.transactions-page tr:nth-child(even) td {
+  background-color: #ecf0f1; /* Slightly lighter alternating rows */
+}
+
+.transactions-page tr:hover td {
+  background-color: #dfe6e9; /* Row hover effect */
+}
+
+/* Transaction Input Styling */
+.transaction-input {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap; /* Make inputs responsive */
+  gap: 10px; /* Add space between inputs */
+}
+
+.transaction-input input,
+.transaction-input select {
+  padding: 8px;
+  border: 1px solid #ddd; /* Consistent with table borders */
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.transaction-input button {
+  padding: 8px 12px;
+  background-color: #2c3e50; /* Match navbar background */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.transaction-input button:hover {
+  background-color: #34495e; /* Slightly lighter shade for hover */
+  transform: scale(1.05); /* Subtle scaling effect */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .transactions-page h2 {
+    font-size: 1.2rem; /* Adjust for smaller screens */
+  }
+
+  .transactions-page th,
+  .transactions-page td {
+    padding: 10px; /* Reduce padding for smaller screens */
+  }
+
+  .transaction-input {
+    flex-direction: column; /* Stack inputs for mobile */
+    gap: 15px; /* Add more spacing for clarity */
+  }
+
+  .transaction-input button {
+    align-self: center; /* Center-align the button */
+    width: 100%; /* Make button full-width */
+  }
+}

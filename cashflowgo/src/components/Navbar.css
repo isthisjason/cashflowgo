@@ -1,0 +1,207 @@
+/* General Navbar Styling */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background-color: #2c3e50; /* Dark background color */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+  color: white;
+  font-family: 'Arial', sans-serif;
+  font-size: 1rem;
+  position: sticky; /* Stays at the top on scroll */
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo Section */
+.navbar-logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Navbar Links */
+.navbar-links {
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover transition */
+}
+
+/* Hover Effect for Links */
+.navbar-links a:hover {
+  background-color: #34495e; /* Slightly lighter shade for hover */
+  color: #1abc9c; /* Modern green color for hover text */
+}
+
+/* Logout Button */
+.logout-button {
+  background-color: transparent;
+  border: 2px solid white;
+  color: white;
+  padding: 8px 15px;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #e74c3c; /* Modern red for hover */
+  color: white;
+  border-color: #e74c3c;
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-label {
+  font-weight: bold;
+  color: white;
+}
+
+.profile-dropdown select {
+  background-color: #2c3e50;
+  color: white;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.profile-dropdown select:hover {
+  background-color: #34495e; /* Slightly lighter shade for hover */
+  color: #1abc9c; /* Matches hover text color of links */
+}
+
+/* Transactions Page */
+.transactions-page {
+  background-color: #2c3e50; /* Same as navbar for consistency */
+  color: white;
+  padding: 20px 30px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 1200px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.transactions-page h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #1abc9c; /* Matches hover color for consistency */
+}
+
+.transactions-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.transactions-page th,
+.transactions-page td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #34495e; /* Lighter border for rows */
+}
+
+.transactions-page th {
+  background-color: #34495e; /* Matches hover background */
+  color: white;
+  font-weight: bold;
+}
+
+.transactions-page td {
+  background-color: #2c3e50;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.transactions-page tr:hover td {
+  background-color: #34495e; /* Lights up rows on hover */
+}
+
+.transactions-page td:first-child {
+  font-weight: bold;
+}
+
+.transactions-page td:nth-child(2) {
+  text-align: right;
+}
+
+.transactions-page td:nth-child(3) {
+  text-align: center;
+}
+
+.transactions-page td[colspan="3"] {
+  text-align: center;
+  font-style: italic;
+  color: #bdc3c7; /* Muted color for "no data" rows */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 15px 20px;
+  }
+
+  .navbar-links {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+      margin-top: 10px;
+  }
+
+  .navbar-links a,
+  .logout-button {
+      width: 100%;
+      text-align: left;
+  }
+
+  .transactions-page {
+      padding: 15px;
+      font-size: 0.9rem;
+  }
+}
+
+/* Budget Alert Button - Red Styling */
+.navbar-button {
+  background-color: #e74c3c; /* Red background */
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover and click effects */
+}
+
+/* Hover effect for Budget Alert button */
+.navbar-button:hover {
+  background-color: #c0392b; /* Darker red for hover */
+  transform: scale(1.05); /* Slight enlargement on hover */
+}
+
+/* Active state for button */
+.navbar-button.active {
+  background-color: #c0392b; /* Match hover state when active */
+  box-shadow: 0px 0px 8px rgba(231, 76, 60, 0.8); /* Add glow effect */
+}

@@ -1,0 +1,68 @@
+/* Summary Chart Container */
+.summary-chart {
+  max-width: 1000px; /* Increase the width for a larger graph */
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff; /* White background for contrast */
+  border-radius: 10px; /* Rounded corners for a modern look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  font-family: 'Arial', sans-serif;
+}
+
+/* Heading Style */
+.summary-chart h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #2c3e50; /* Darker text color for clarity */
+  margin-bottom: 20px;
+}
+
+/* Timeframe Selector */
+.timeframe-selector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.timeframe-selector label {
+  margin-right: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #34495e; /* Subtle dark gray */
+}
+
+.timeframe-dropdown {
+  padding: 10px 15px;
+  border: 1px solid #dcdcdc; /* Light gray border */
+  border-radius: 5px;
+  font-size: 1rem;
+  color: #2c3e50;
+  background-color: #f9f9f9; /* Soft background for dropdown */
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.timeframe-dropdown:hover,
+.timeframe-dropdown:focus {
+  border-color: #1abc9c; /* Highlight border */
+  box-shadow: 0 0 5px rgba(26, 188, 156, 0.5); /* Subtle focus glow */
+}
+
+/* Chart Container */
+.canvas-container {
+  position: relative;
+  height: 400px;
+  width: 100%; /* Ensure the chart uses full width */
+  max-width: 950px; /* Limit the max width for larger graphs */
+  margin: 0 auto; /* Center the graph */
+}
+
+/* No Data Message */
+.summary-chart p {
+  text-align: center;
+  font-size: 1rem;
+  color: gray;
+  font-style: italic;
+  margin-top: 15px;
+}

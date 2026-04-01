@@ -1,0 +1,46 @@
+.App {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+}
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.profile-switcher {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.profile-switcher button {
+  padding: 8px 16px;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.profile-switcher button:hover {
+  background-color: #1a2b3c;
+}
+
+.overview-section {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.dashboard-content {
+  margin-top: 30px;
+}
+
+h2 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
