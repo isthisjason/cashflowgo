@@ -3,6 +3,9 @@ from django.core.mail import send_mail
 from django.conf import settings
 from finances.models import Subscription
 from datetime import date, timedelta
+import logging
+
+logger = logging.getLogger(__name__)
 
 def validate_user_profile(user, profile_name):
     """
@@ -22,11 +25,11 @@ def send_notification_email(subject, message, recipient_list):
             message,
             settings.DEFAULT_FROM_EMAIL,
             recipient_list,
-            fail_silently=False,  # Set to False to debug email failures
+            fail_silently=False,
         )
-        print(f"Email sent to {recipient_list}")
+        logger.info("Notification email sent recipient_count=%s", len(recipient_list))
     except Exception as e:
-        print(f"Error sending email: {e}")
+        logger.exception("Notification email failed")
 
 def process_subscription_reminders():
     today = date.today()
@@ -35,7 +38,7 @@ def process_subscription_reminders():
         expiry_date__lte=today + timedelta(days=30)
     )
 
-    print(f"Found {subscriptions.count()} subscriptions for reminders.")
+    logger.info("Processing subscription reminders count=%s", subscriptions.count())
 
     for subscription in subscriptions:
         if subscription.is_reminder_due():
@@ -48,6 +51,6 @@ def process_subscription_reminders():
             )
             try:
                 send_notification_email(subject, message, [subscription.user.email])
-                print(f"Email sent to {subscription.user.email} for subscription {subscription.name}.")
+                logger.info("Subscription reminder sent subscription_id=%s", subscription.id)
             except Exception as e:
-                print(f"Error sending email to {subscription.user.email}: {e}")
+                logger.exception("Subscription reminder failed subscription_id=%s", subscription.id)

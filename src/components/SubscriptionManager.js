@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../axiosConfig'; // For authenticated API requests
-import emailjs from '@emailjs/browser';
 import './SubscriptionManager.css';
-
-// Replace these with your actual EmailJS credentials
-const EMAILJS_PUBLIC_KEY = "yGK_dUK1qK9vKmqnF";
-const EMAILJS_SERVICE_ID = "service_vaeotve";
-const EMAILJS_TEMPLATE_ID = "template_qvlj9fn";
 
 function SubscriptionManager({ profile }) { // Profile passed as a prop
   const [subscriptions, setSubscriptions] = useState([]);
@@ -44,33 +38,6 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
     }
   };
 
-  const sendEmailNotification = async (subscription) => {
-    const templateParams = {
-        subscription_name: subscription.name || "N/A",
-        expiry_date: subscription.expiryDate || "N/A",
-        reminder_days: subscription.reminderDays || "N/A",
-        amount: subscription.amount ? `$${parseFloat(subscription.amount).toFixed(2)}` : "N/A",
-        to_email: subscription.email,
-    };
-
-    try {
-        const response = await emailjs.send(
-            EMAILJS_SERVICE_ID,
-            EMAILJS_TEMPLATE_ID,
-            templateParams,
-            EMAILJS_PUBLIC_KEY
-        );
-        console.log('EmailJS response:', response);
-        if (response.status === 200) {
-            console.log(`Email sent successfully to ${subscription.email}`);
-        } else {
-            console.error(`Failed to send email: ${response.text}`);
-        }
-    } catch (error) {
-        console.error('Error sending email with EmailJS:', error);
-    }
-  };
-
   const addSubscription = async () => {
     const subscriptionData = {
       name: newSubscription.name,
@@ -87,9 +54,6 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
     try {
       const response = await axios.post('/finances/subscriptions/', subscriptionData);
       console.log('Subscription added:', response.data);
-
-      // Send email notification
-      await sendEmailNotification(subscriptionData);
 
       setSubscriptions([...subscriptions, response.data]);
       setNewSubscription({
