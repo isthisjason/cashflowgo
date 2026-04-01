@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { tryOfflineMock } from './offlineApi';
 
 // Utility function to get CSRF token from cookies
 export const getCSRFToken = () => {
@@ -18,6 +19,8 @@ const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:8000/api', // Use environment variable or default to localhost
   withCredentials: true, // Include cookies with requests
 });
+
+console.log('API base URL:', axiosInstance.defaults.baseURL);
 
 // Add an interceptor to dynamically fetch and attach the CSRF token to every request
 axiosInstance.interceptors.request.use(
@@ -40,6 +43,15 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+    const fallbackEnabled = process.env.REACT_APP_ENABLE_OFFLINE_FALLBACK !== '0';
+    if (fallbackEnabled && error?.config && !error.response) {
+      const mockResponse = tryOfflineMock(error.config, axiosInstance.defaults.baseURL);
+      if (mockResponse) {
+        console.warn(`Offline fallback served: ${error.config.method?.toUpperCase()} ${error.config.url}`);
+        return Promise.resolve(mockResponse);
+      }
+    }
+
     if (error.response) {
       console.error(`API Error: ${error.response.status} - ${error.response.statusText}`);
       console.error('Response data:', error.response.data);

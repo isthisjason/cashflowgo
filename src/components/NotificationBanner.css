@@ -1,0 +1,32 @@
+.notification-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.notification-banner.info {
+  background: #2c3e50;
+}
+
+.notification-banner.success {
+  background: #2e7d32;
+}
+
+.notification-banner.error {
+  background: #c62828;
+}
+
+.notification-banner button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+}
+

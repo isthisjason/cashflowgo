@@ -18,6 +18,9 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:frontend": "react-scripts start",
+    "dev:backend": "python3 manage.py runserver",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

@@ -37,7 +37,11 @@ function Login({ onLogin }) {
       navigate('/');
     } catch (err) {
       console.error('Login error:', err.response?.data || err); // Debugging error response
-      setError(err.response?.data?.error || 'An error occurred. Please try again.');
+      if (!err.response) {
+        setError('Cannot reach API server. Start backend at http://127.0.0.1:8000 and try again.');
+      } else {
+        setError(err.response?.data?.error || 'Login failed. Check credentials and try again.');
+      }
     }
   };
 

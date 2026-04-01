@@ -1,10 +1,11 @@
 from django.db import models
 from django.conf import settings
 from datetime import date, timedelta
-from django.utils.timezone import now
+from decimal import Decimal, InvalidOperation
 import hashlib
+import logging
 
-import hashlib
+logger = logging.getLogger(__name__)
 
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
@@ -35,11 +36,23 @@ class Transaction(models.Model):
     def __str__(self):
         return f"{self.transaction_type}: {self.amount} on {self.date}"
 
+    @staticmethod
+    def build_unique_hash(amount, category, date_value, profile_type, user_id):
+        try:
+            normalized_amount = f"{Decimal(str(amount)).quantize(Decimal('0.01'))}"
+        except (InvalidOperation, TypeError, ValueError):
+            normalized_amount = str(amount)
+        hash_input = f"{normalized_amount}{category}{date_value}{profile_type}{user_id}"
+        return hashlib.md5(hash_input.encode()).hexdigest()
+
     def save(self, *args, **kwargs):
-        # Normalize amount to ensure consistent formatting
-        normalized_amount = f"{float(self.amount):.2f}"  # Always two decimal places
-        hash_input = f"{normalized_amount}{self.category}{self.date}{self.profile_type}{self.user.id}"
-        self.unique_hash = hashlib.md5(hash_input.encode()).hexdigest()
+        self.unique_hash = self.build_unique_hash(
+            amount=self.amount,
+            category=self.category,
+            date_value=self.date,
+            profile_type=self.profile_type,
+            user_id=self.user_id,
+        )
         super().save(*args, **kwargs)
 
 class Budget(models.Model):
@@ -76,7 +89,7 @@ class Budget(models.Model):
             date__lte=today,
             profile_type=self.profile_type
         )
-        print("Transactions retrieved for spending calculation:", transactions)  # Debug log
+        logger.debug("Budget spending query count=%s profile=%s", transactions.count(), self.profile_type)
         return sum(transaction.amount for transaction in transactions)
 
     def __str__(self):
@@ -85,6 +98,11 @@ class Budget(models.Model):
     def is_over_budget(self):
         current_spending = self.calculate_current_spending()
         return current_spending > self.monthly_limit
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["user", "profile_type"], name="unique_budget_per_user_profile"),
+        ]
     
 class Subscription(models.Model):
     PROFILE_CHOICES = [
@@ -121,5 +139,11 @@ class Subscription(models.Model):
     def is_reminder_due(self):
         reminder_date = self.expiry_date - timedelta(days=self.reminder_days)
         is_due = reminder_date <= date.today() < self.expiry_date
-        print(f"Reminder for {self.name}: Reminder date = {reminder_date}, Today = {date.today()}, Is due = {is_due}")
+        logger.debug(
+            "Subscription reminder check name=%s reminder_date=%s today=%s due=%s",
+            self.name,
+            reminder_date,
+            date.today(),
+            is_due,
+        )
         return is_due

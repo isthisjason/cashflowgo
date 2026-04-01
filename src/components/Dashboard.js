@@ -5,6 +5,7 @@ import RecentTransactions from './RecentTransactions';
 import SummaryChart from './SummaryChart';
 import AddTransaction from './AddTransaction';
 import SpendingHabits from './SpendingHabits';
+import NotificationBanner from './NotificationBanner';
 import { getCSRFToken } from '../axiosConfig';
 import './Dashboard.css';
 
@@ -19,6 +20,11 @@ function Dashboard({ profile, setIsAuthenticated }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isAddTransactionOpen, setIsAddTransactionOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (next) => {
+    setNotification(next);
+  };
 
   // Fetch transactions and financial data
   const fetchData = useCallback(async () => {
@@ -67,7 +73,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
         setIsAuthenticated(false);
         localStorage.removeItem('loggedInUser');
       } else {
-        alert('Failed to fetch data. Please try again later.');
+        showNotification({ type: 'error', message: 'Failed to fetch data. Please try again later.' });
       }
     } finally {
       setIsLoading(false);
@@ -100,7 +106,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
         setIsAddTransactionOpen(false);
       } catch (error) {
         console.error('Error adding transaction:', error);
-        alert('Failed to add transaction. Please try again.');
+        showNotification({ type: 'error', message: 'Failed to add transaction. Please try again.' });
       } finally {
         setIsSubmitting(false);
       }
@@ -134,6 +140,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
   return (
     <div className="dashboard-content">
       <h2>Current Profile: {profile.toUpperCase()}</h2>
+      <NotificationBanner notification={notification} onDismiss={() => setNotification(null)} />
 
       {isLoading ? (
         <p>Loading data for {profile}...</p>
@@ -178,6 +185,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
         onAddTransaction={handleAddTransaction}
         isModalOpen={isAddTransactionOpen && !isSubmitting}
         onClose={() => setIsAddTransactionOpen(false)}
+        onNotify={showNotification}
       />
 
       <div className="floating-buttons">

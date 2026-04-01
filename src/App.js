@@ -18,25 +18,23 @@ function App() {
   const [showBudgetAlert, setShowBudgetAlert] = useState(false); // State to toggle BudgetAlert dropdown
 
   useEffect(() => {
-    const fetchCsrfToken = async () => {
+    const initializeAuth = async () => {
       try {
         await axios.get('/accounts/csrf/');
-        console.log('CSRF token set successfully');
+        const authResponse = await axios.get('/accounts/check-authentication/');
+        if (authResponse.data?.is_authenticated) {
+          setIsAuthenticated(true);
+          return;
+        }
+        setIsAuthenticated(false);
       } catch (error) {
-        console.error('Error fetching CSRF token:', error.response?.data || error.message);
+        console.error('Error during auth bootstrap:', error.response?.data || error.message);
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        setIsAuthenticated(Boolean(loggedInUser));
       }
     };
 
-    fetchCsrfToken();
-
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (loggedInUser) {
-      console.log('User logged in:', loggedInUser);
-      setIsAuthenticated(true);
-    } else {
-      console.log('No logged-in user found.');
-      setIsAuthenticated(false);
-    }
+    initializeAuth();
   }, []);
 
   const switchProfile = (newProfile) => {

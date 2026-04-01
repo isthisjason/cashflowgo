@@ -1,6 +1,13 @@
 from .models import Transaction, Subscription, Budget
 from rest_framework.response import Response
-from .serializers import TransactionSerializer, SubscriptionSerializer, BudgetSerializer
+from .serializers import (
+    TransactionSerializer,
+    SubscriptionSerializer,
+    BudgetSerializer,
+    ProfileTypeSerializer,
+    AdjustedIncomeUpdateSerializer,
+    BudgetUpdateRequestSerializer,
+)
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
@@ -8,7 +15,6 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from finances.utils import send_notification_email
 from finances.utils import process_subscription_reminders
-import hashlib
 import logging
 
 # Configure logging (optional: configure in settings for better control)
@@ -18,17 +24,8 @@ from rest_framework.exceptions import ValidationError
 
 class AddTransactionView(APIView):
     def post(self, request, *args, **kwargs):
-        print("=== Incoming AddTransaction Request ===")
-        print("Request cookies:", request.COOKIES)
-        print(f"Session ID from cookies: {request.COOKIES.get('sessionid')}")
-        print(f"CSRF Token from cookies: {request.COOKIES.get('csrftoken')}")
-        print("Request headers:", request.headers)
-        print(f"Request user: {request.user}")
-        print(f"Is user authenticated? {request.user.is_authenticated}")
-        print("Incoming request data:", request.data)
-
         if not request.user.is_authenticated:
-            print("User is not authenticated. Rejecting request.")
+            logger.warning("Unauthenticated add transaction attempt")
             return Response({'detail': 'Authentication required'}, status=401)
 
         # Extract transaction data
@@ -37,20 +34,19 @@ class AddTransactionView(APIView):
         category = request.data.get('category', 'Uncategorized')
         date = request.data.get('date')
 
-        print(f"Active Profile: {active_profile}")
-
         # Generate unique hash for the transaction
-        hash_input = f"{amount}{category}{date}{active_profile}{request.user.id}"
-        unique_hash = hashlib.md5(hash_input.encode()).hexdigest()
-
-        # Debugging logs
-        print(f"Hash input: {hash_input}")
-        print(f"Generated unique hash: {unique_hash}")
+        unique_hash = Transaction.build_unique_hash(
+            amount=amount,
+            category=category,
+            date_value=date,
+            profile_type=active_profile,
+            user_id=request.user.id,
+        )
 
         # Check for duplicates
         existing_transaction = Transaction.objects.filter(unique_hash=unique_hash).first()
         if existing_transaction:
-            print(f"Duplicate transaction detected. Returning existing transaction with hash: {unique_hash}")
+            logger.info("Duplicate transaction detected user_id=%s hash=%s", request.user.id, unique_hash)
             serializer = TransactionSerializer(existing_transaction)
             return Response(serializer.data, status=200)  # Return the existing transaction with a 200 status
 
@@ -62,7 +58,7 @@ class AddTransactionView(APIView):
         serializer = TransactionSerializer(data=data)
         if serializer.is_valid():
             saved_transaction = serializer.save(unique_hash=unique_hash)  # Save with unique hash
-            print("Transaction saved successfully:", saved_transaction)
+            logger.info("Transaction saved user_id=%s transaction_id=%s", request.user.id, saved_transaction.id)
 
             # Check if this transaction causes the user to go over budget
             budget = Budget.objects.get_or_create(user=request.user, profile_type=active_profile)[0]
@@ -78,11 +74,11 @@ class AddTransactionView(APIView):
                     f"Best regards,\nCashFlowGo Team"
                 )
                 send_notification_email(subject, message, [request.user.email])
-                print("Budget alert email sent to:", request.user.email)
+                logger.info("Budget alert email sent user_id=%s", request.user.id)
 
             return Response(serializer.data, status=201)
 
-        print("Transaction validation failed:", serializer.errors)
+        logger.warning("Transaction validation failed errors=%s", serializer.errors)
         return Response(serializer.errors, status=400)
 
 class TransactionsView(APIView):
@@ -108,14 +104,16 @@ class AdjustedIncomeView(APIView):
         """
         Fetch the adjusted income for the given profile type.
         """
-        if profile_type not in ["personal", "business", "family"]:
-            return Response({"error": f"Invalid profile type: {profile_type}. Must be one of personal, business, family."}, status=400)
+        profile_serializer = ProfileTypeSerializer(data={"profile_type": profile_type})
+        if not profile_serializer.is_valid():
+            return Response(profile_serializer.errors, status=400)
+        normalized_profile = profile_serializer.validated_data["profile_type"]
 
         user = request.user
-        income_field = f"adjusted_income_{profile_type}"
+        income_field = f"adjusted_income_{normalized_profile}"
 
         if not hasattr(user, income_field):
-            return Response({"error": f"User does not have an income field for profile type {profile_type}."}, status=400)
+            return Response({"error": f"User does not have an income field for profile type {normalized_profile}."}, status=400)
 
         return Response({income_field: getattr(user, income_field)})
 
@@ -123,23 +121,21 @@ class AdjustedIncomeView(APIView):
         """
         Update the adjusted income for the given profile type.
         """
-        if profile_type not in ["personal", "business", "family"]:
-            return Response({"error": f"Invalid profile type: {profile_type}. Must be one of personal, business, family."}, status=400)
+        profile_serializer = ProfileTypeSerializer(data={"profile_type": profile_type})
+        if not profile_serializer.is_valid():
+            return Response(profile_serializer.errors, status=400)
+        normalized_profile = profile_serializer.validated_data["profile_type"]
 
-        new_income = request.data.get("adjusted_income")
-        if new_income is None:
-            return Response({"error": "No income value provided."}, status=400)
-
-        try:
-            new_income = float(new_income)
-        except ValueError:
-            return Response({"error": "Invalid income value. Must be a number."}, status=400)
+        income_serializer = AdjustedIncomeUpdateSerializer(data=request.data)
+        if not income_serializer.is_valid():
+            return Response(income_serializer.errors, status=400)
+        new_income = income_serializer.validated_data["adjusted_income"]
 
         user = request.user
-        income_field = f"adjusted_income_{profile_type}"
+        income_field = f"adjusted_income_{normalized_profile}"
 
         if not hasattr(user, income_field):
-            return Response({"error": f"User does not have an income field for profile type {profile_type}."}, status=400)
+            return Response({"error": f"User does not have an income field for profile type {normalized_profile}."}, status=400)
 
         setattr(user, income_field, new_income)
         user.save()
@@ -161,8 +157,7 @@ class AllTransactionsView(APIView):
         if profile_type:
             transactions = transactions.filter(profile_type=profile_type)
 
-        print(f"All Transactions for {user.email}: {transactions.count()}")
-        print("Transactions:", list(transactions.values('id', 'amount', 'category', 'date')))
+        logger.debug("All transactions fetched user_id=%s count=%s", user.id, transactions.count())
 
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -185,7 +180,7 @@ class SubscriptionListCreateView(ListCreateAPIView):
 
         subscription = serializer.save(user=self.request.user, profile_type=profile_type)
 
-        print(f"Created subscription: {subscription.name}, Email: {subscription.email}, Expiry: {subscription.expiry_date}, Reminder Days: {subscription.reminder_days}")
+        logger.info("Created subscription id=%s user_id=%s", subscription.id, self.request.user.id)
 
         # Immediate notification
         subject = f"Subscription Added: {subscription.name}"
@@ -197,16 +192,16 @@ class SubscriptionListCreateView(ListCreateAPIView):
         )
         try:
             send_notification_email(subject, message, [subscription.email])
-            print(f"Creation email sent successfully to {subscription.email}")
+            logger.info("Subscription creation email sent subscription_id=%s", subscription.id)
         except Exception as e:
-            print(f"Failed to send creation email to {subscription.email}: {e}")
+            logger.exception("Subscription creation email failed subscription_id=%s", subscription.id)
 
         # Trigger reminder logic for all subscriptions
         try:
             process_subscription_reminders()
-            print("Reminder logic triggered after subscription creation.")
+            logger.debug("Triggered subscription reminders after create")
         except Exception as e:
-            print(f"Failed to trigger reminder logic: {e}")
+            logger.exception("Failed to trigger reminder logic after create")
 
 
 class SubscriptionDetailView(RetrieveUpdateDestroyAPIView):
@@ -223,7 +218,7 @@ class SubscriptionDetailView(RetrieveUpdateDestroyAPIView):
 
         subscription = serializer.save()
 
-        print(f"Updated subscription: {subscription.name}, Email: {subscription.email}, Expiry: {subscription.expiry_date}, Reminder Days: {subscription.reminder_days}")
+        logger.info("Updated subscription id=%s user_id=%s", subscription.id, self.request.user.id)
 
         # Immediate notification about the update
         update_subject = f"Subscription Updated: {subscription.name}"
@@ -236,16 +231,16 @@ class SubscriptionDetailView(RetrieveUpdateDestroyAPIView):
         )
         try:
             send_notification_email(update_subject, update_message, [subscription.email])
-            print(f"Update email sent successfully to {subscription.email}")
+            logger.info("Subscription update email sent subscription_id=%s", subscription.id)
         except Exception as e:
-            print(f"Failed to send update email to {subscription.email}: {e}")
+            logger.exception("Subscription update email failed subscription_id=%s", subscription.id)
 
         # Trigger reminder logic for all subscriptions
         try:
             process_subscription_reminders()
-            print("Reminder logic triggered after subscription update.")
+            logger.debug("Triggered subscription reminders after update")
         except Exception as e:
-            print(f"Failed to trigger reminder logic: {e}")
+            logger.exception("Failed to trigger reminder logic after update")
 
     def perform_destroy(self, instance):
         if instance.user != self.request.user:
@@ -258,10 +253,11 @@ class BudgetView(APIView):
 
     def get(self, request):
         profile_type = request.query_params.get('profile_type', 'personal')
-        print("Received profile_type:", profile_type)
-
-        if not profile_type:
-            return Response({"detail": "Profile type is required."}, status=status.HTTP_400_BAD_REQUEST)
+        profile_serializer = ProfileTypeSerializer(data={"profile_type": profile_type})
+        if not profile_serializer.is_valid():
+            return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        profile_type = profile_serializer.validated_data["profile_type"]
+        logger.debug("Budget fetch profile_type=%s user_id=%s", profile_type, request.user.id)
 
         budget = Budget.objects.get_or_create(user=request.user, profile_type=profile_type)[0]
         current_spending = budget.calculate_current_spending()
@@ -271,14 +267,16 @@ class BudgetView(APIView):
         return Response(data)
 
     def post(self, request):
-        profile_type = request.data.get('profile_type')
-        if not profile_type:
-            return Response({"detail": "Profile type is required."}, status=status.HTTP_400_BAD_REQUEST)
+        request_serializer = BudgetUpdateRequestSerializer(data=request.data)
+        if not request_serializer.is_valid():
+            return Response(request_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        validated = request_serializer.validated_data
+        profile_type = validated["profile_type"]
 
         budget = Budget.objects.get_or_create(user=request.user, profile_type=profile_type)[0]
-        print("POST Data Received:", request.data)
+        logger.debug("Budget update profile_type=%s user_id=%s", profile_type, request.user.id)
 
-        serializer = BudgetSerializer(budget, data=request.data, partial=True)
+        serializer = BudgetSerializer(budget, data=validated, partial=True)
         if serializer.is_valid():
             saved_budget = serializer.save(user=request.user, profile_type=profile_type)
 
@@ -296,5 +294,5 @@ class BudgetView(APIView):
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            print("Serializer errors:", serializer.errors)
+            logger.warning("Budget serializer errors=%s", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

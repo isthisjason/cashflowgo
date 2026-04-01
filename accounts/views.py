@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.utils.decorators import method_decorator
 from django.contrib.auth import get_user_model
+import logging
+
+logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
@@ -17,24 +20,19 @@ class LoginView(APIView):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        # Debugging: Log the provided credentials
-        print(f"Attempting login with email: {email}")
-        print(f"Provided password: {'*' * len(password) if password else '(none)'}")
+        logger.info("Login attempt email=%s", email)
 
         # Authenticate user
         user = authenticate(username=email, password=password)
 
         if user:
-            print(f"User authenticated: {user}")
             if not user.is_active:
-                print("User is inactive.")
+                logger.warning("Inactive user login attempt email=%s", email)
                 return Response({'error': 'User is inactive.'}, status=status.HTTP_401_UNAUTHORIZED)
 
             login(request, user)
-            print(f"Is user authenticated? {request.user.is_authenticated}")
-            print(f"Session ID: {request.session.session_key}")
             csrf_token = get_token(request)
-            print(f"Session ID after login: {request.session.session_key}")  # Debug session ID
+            logger.info("Login success user_id=%s", user.id)
             return Response({
                 "message": "Login successful",
                 "csrf_token": csrf_token,
@@ -45,7 +43,7 @@ class LoginView(APIView):
                 }
             }, status=status.HTTP_200_OK)
         else:
-            print("Authentication failed.")
+            logger.warning("Login failed email=%s", email)
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])
@@ -53,7 +51,7 @@ def user_logout(request):
     """
     Handles API-based logout for React frontend.
     """
-    print(f"Logout triggered by user: {request.user}")  # Log user information for debugging
+    logger.info("Logout user_id=%s", getattr(request.user, "id", None))
     logout(request)  # Log the user out and clear the session
     csrf_token = get_token(request)  # Generate a new CSRF token for security
     return Response({

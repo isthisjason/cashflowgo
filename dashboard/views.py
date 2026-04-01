@@ -1,21 +1,21 @@
 from django.db.models import Sum
-from finances.models import Transaction  # Ensure the Transaction model is imported
+from finances.models import Transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from finances.models import Transaction
 from datetime import timedelta
 from django.utils.timezone import now
 from rest_framework.permissions import IsAuthenticated
-from finances.serializers import TransactionSerializer
 
 class SummaryView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, profile, frequency):
         if frequency not in ["weekly", "monthly", "yearly"]:
             return Response({"error": "Invalid frequency"}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            summary_data = self.get_summary_data(profile, frequency)
+            summary_data = self.get_summary_data(request.user, profile, frequency)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -24,7 +24,7 @@ class SummaryView(APIView):
 
         return Response(summary_data, status=status.HTTP_200_OK)
 
-    def get_summary_data(self, profile, frequency):
+    def get_summary_data(self, user, profile, frequency):
         today = now().date()
 
         # Calculate start date based on frequency
@@ -36,7 +36,12 @@ class SummaryView(APIView):
             start_date = today.replace(month=1, day=1)  # First day of the current year
 
         # Aggregate transactions by profile and date
-        transactions = Transaction.objects.filter(profile=profile, date__gte=start_date)
+        normalized_profile = profile.lower()
+        transactions = Transaction.objects.filter(
+            user=user,
+            profile_type=normalized_profile,
+            date__gte=start_date,
+        )
         income = transactions.filter(transaction_type="Income").values("date").annotate(total=Sum("amount"))
         expenses = transactions.filter(transaction_type="Expense").values("date").annotate(total=Sum("amount"))
 
@@ -62,10 +67,10 @@ class SpendingHabitsView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        profile = kwargs.get("profile", "personal").capitalize()
+        profile = kwargs.get("profile", "personal").lower()
 
         # Filter transactions by profile
-        transactions = Transaction.objects.filter(user=request.user, profile=profile)
+        transactions = Transaction.objects.filter(user=request.user, profile_type=profile, transaction_type="Expense")
 
         # Aggregate spending by category
         category_data = (

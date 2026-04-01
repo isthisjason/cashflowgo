@@ -44,3 +44,16 @@ class BudgetSerializer(serializers.ModelSerializer):
         if value < 0:
             raise serializers.ValidationError("Monthly limit must be non-negative.")
         return value
+
+
+class ProfileTypeSerializer(serializers.Serializer):
+    profile_type = serializers.ChoiceField(choices=["personal", "business", "family"])
+
+
+class AdjustedIncomeUpdateSerializer(serializers.Serializer):
+    adjusted_income = serializers.FloatField()
+
+
+class BudgetUpdateRequestSerializer(serializers.Serializer):
+    profile_type = serializers.ChoiceField(choices=["personal", "business", "family"])
+    monthly_limit = serializers.FloatField(min_value=0, required=False)

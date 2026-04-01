@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from '../axiosConfig';
 import './AddTransaction.css';
 
-function AddTransaction({ profile, onAddTransaction, isModalOpen, onClose }) {
+function AddTransaction({ profile, onAddTransaction, isModalOpen, onClose, onNotify }) {
   const [formData, setFormData] = useState({
     amount: '',
     category: '',
@@ -25,7 +25,7 @@ function AddTransaction({ profile, onAddTransaction, isModalOpen, onClose }) {
 
     // Validate form data
     if (!formData.amount || !formData.category || !formData.date) {
-      alert('Please fill in all fields.');
+      onNotify?.({ type: 'error', message: 'Please fill in all fields.' });
       setIsSubmitting(false);
       return;
     }
@@ -59,7 +59,7 @@ function AddTransaction({ profile, onAddTransaction, isModalOpen, onClose }) {
       onClose(); // Close modal
     } catch (error) {
       console.error('Error adding transaction:', error.response?.data || error.message);
-      alert('Failed to add transaction. Please try again.');
+      onNotify?.({ type: 'error', message: 'Failed to add transaction. Please try again.' });
     } finally {
       setIsSubmitting(false); // Unlock submission
     }
