@@ -54,7 +54,9 @@ axiosInstance.interceptors.response.use(
 
     if (error.response) {
       console.error(`API Error: ${error.response.status} - ${error.response.statusText}`);
-      console.error('Response data:', error.response.data);
+      if (process.env.NODE_ENV !== 'production') {
+        console.error('Response data:', error.response.data);
+      }
     } else if (error.request) {
       console.error('No response received from API:', error.request);
     } else {

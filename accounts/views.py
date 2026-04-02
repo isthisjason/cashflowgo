@@ -14,20 +14,29 @@ logger = logging.getLogger(__name__)
 
 User = get_user_model()
 
+
+def mask_email(email):
+    if not email or "@" not in email:
+        return "unknown"
+    local, domain = email.split("@", 1)
+    if not local:
+        return f"***@{domain}"
+    return f"{local[0]}***@{domain}"
+
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         email = request.data.get('email')
         password = request.data.get('password')
 
-        logger.info("Login attempt email=%s", email)
+        logger.info("Login attempt email=%s", mask_email(email))
 
         # Authenticate user
         user = authenticate(username=email, password=password)
 
         if user:
             if not user.is_active:
-                logger.warning("Inactive user login attempt email=%s", email)
+                logger.warning("Inactive user login attempt email=%s", mask_email(email))
                 return Response({'error': 'User is inactive.'}, status=status.HTTP_401_UNAUTHORIZED)
 
             login(request, user)
@@ -43,7 +52,7 @@ class LoginView(APIView):
                 }
             }, status=status.HTTP_200_OK)
         else:
-            logger.warning("Login failed email=%s", email)
+            logger.warning("Login failed email=%s", mask_email(email))
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
 @api_view(['POST'])

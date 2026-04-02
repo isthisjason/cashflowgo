@@ -25,7 +25,6 @@ Frontend:
 
 - `REACT_APP_API_BASE_URL` (set to your deployed API URL + `/api`)
 - `REACT_APP_ENABLE_OFFLINE_FALLBACK=0` (recommended in production)
-- Optional EmailJS vars if you add your own provider setup later
 
 ## 3) Render Backend Deployment
 
@@ -37,6 +36,7 @@ Typical flow:
 2. Create a new Render Blueprint from repo
 3. In Render, set:
    - `DJANGO_SECRET_KEY` (secure random value)
+   - `DJANGO_DEBUG=false`
    - `DJANGO_ALLOWED_HOSTS` to your Render host (and custom API host if any)
    - `CORS_ALLOWED_ORIGINS` to Cloudflare frontend URL(s)
    - `CSRF_TRUSTED_ORIGINS` to Cloudflare frontend URL(s)
