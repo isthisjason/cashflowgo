@@ -38,7 +38,8 @@ function Dashboard({ profile, setIsAuthenticated }) {
     }
 
     try {
-      const transactionsResponse = await axios.get(`/finances/transactions/${profile}/`, {
+      const transactionsResponse = await axios.get('/finances/transactionspage/all/', {
+        params: { profile_type: profile.toLowerCase() },
         withCredentials: true,
       });
 

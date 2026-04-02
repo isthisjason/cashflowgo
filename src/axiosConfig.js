@@ -43,9 +43,7 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    const fallbackEnabled =
-      process.env.REACT_APP_ENABLE_OFFLINE_FALLBACK === '1' ||
-      (process.env.REACT_APP_ENABLE_OFFLINE_FALLBACK !== '0' && process.env.NODE_ENV !== 'production');
+    const fallbackEnabled = process.env.REACT_APP_ENABLE_OFFLINE_FALLBACK === '1';
     if (fallbackEnabled && error?.config && !error.response) {
       const mockResponse = tryOfflineMock(error.config, axiosInstance.defaults.baseURL);
       if (mockResponse) {

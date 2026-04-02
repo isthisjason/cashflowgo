@@ -81,7 +81,7 @@ Key vars:
 
 ## Deployment
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for a step-by-step deployment checklist and Render example config.
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for a step-by-step Cloudflare Pages + Render deployment guide.
 
 ## Core Flows Checklist
 

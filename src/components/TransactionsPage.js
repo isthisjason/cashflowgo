@@ -21,8 +21,10 @@ function TransactionsPage({ profile }) {
           return;
         }
 
-        console.log(`Fetching transactions for profile: ${profile}...`);
-        const response = await axios.get(`/finances/transactions/${profile}/`); // Profile-specific API call
+        console.log(`Fetching all transactions for profile: ${profile}...`);
+        const response = await axios.get('/finances/transactionspage/all/', {
+          params: { profile_type: profile.toLowerCase() },
+        });
 
         // Log response for debugging
         console.log('Fetched transactions:', response.data);
