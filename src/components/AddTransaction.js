@@ -40,23 +40,29 @@ function AddTransaction({ profile, onAddTransaction, isModalOpen, onClose, onNot
       ...formData,
       date: adjustedDate,
       transaction_type: 'Expense',
-      profile,
+      profile_type: profile,
     };
 
     console.log('Submitting transaction:', transactionData);
 
     try {
-      const response = await axios.post('/finances/add-transaction/', transactionData, {
-        headers: {
-          'X-CSRFToken': document.cookie.match(/csrftoken=([\w-]+)/)?.[1],
-        },
-      });
+      let response;
+      if (onAddTransaction) {
+        response = await onAddTransaction(transactionData);
+      } else {
+        response = await axios.post('/finances/add-transaction/', transactionData, {
+          headers: {
+            'X-CSRFToken': document.cookie.match(/csrftoken=([\w-]+)/)?.[1],
+          },
+          withCredentials: true,
+        });
+      }
 
-      console.log('Transaction added successfully:', response.data);
+      console.log('Transaction added successfully:', response?.data || response);
 
-      onAddTransaction(response.data); // Notify parent
       setFormData({ amount: '', category: '', date: '' }); // Reset form
-      onClose(); // Close modal
+      onClose?.(); // Close modal
+      onNotify?.({ type: 'success', message: 'Transaction added successfully.' });
     } catch (error) {
       console.error('Error adding transaction:', error.response?.data || error.message);
       onNotify?.({ type: 'error', message: 'Failed to add transaction. Please try again.' });

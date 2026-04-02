@@ -95,7 +95,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
 
       try {
         console.log('Starting transaction submission');
-        await axios.post(`/finances/add-transaction/`, newTransaction, {
+        const response = await axios.post(`/finances/add-transaction/`, newTransaction, {
           headers: { 'X-CSRFToken': getCSRFToken() },
           withCredentials: true,
         });
@@ -104,9 +104,11 @@ function Dashboard({ profile, setIsAuthenticated }) {
 
         await fetchData();
         setIsAddTransactionOpen(false);
+        return response;
       } catch (error) {
         console.error('Error adding transaction:', error);
         showNotification({ type: 'error', message: 'Failed to add transaction. Please try again.' });
+        throw error;
       } finally {
         setIsSubmitting(false);
       }

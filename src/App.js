@@ -50,7 +50,6 @@ function App() {
 
   const handleLogin = () => {
     setIsAuthenticated(true);
-    localStorage.setItem('loggedInUser', 'true');
     console.log('User logged in'); // Debug log
   };
 
@@ -121,7 +120,6 @@ function App() {
                   <Login
                     onLogin={() => {
                       handleLogin();
-                      setIsAuthenticated(true);
                     }}
                   />
                 )
