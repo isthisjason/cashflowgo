@@ -6,6 +6,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 def send_verification_email(user):
+    if not getattr(settings, "EMAIL_NOTIFICATIONS_ENABLED", False):
+        logger.info("Email notifications disabled; skipping verification email")
+        return
+
     try:
         # Attempt to retrieve the token associated with this user
         token = user.emailverificationtoken.token

@@ -19,6 +19,9 @@ def validate_user_profile(user, profile_name):
         return False
     
 def send_notification_email(subject, message, recipient_list):
+    if not getattr(settings, "EMAIL_NOTIFICATIONS_ENABLED", False):
+        logger.info("Email notifications disabled; skipping email send")
+        return
     try:
         send_mail(
             subject,
@@ -32,6 +35,10 @@ def send_notification_email(subject, message, recipient_list):
         logger.exception("Notification email failed")
 
 def process_subscription_reminders():
+    if not getattr(settings, "EMAIL_NOTIFICATIONS_ENABLED", False):
+        logger.info("Email notifications disabled; skipping subscription reminders")
+        return
+
     today = date.today()
     subscriptions = Subscription.objects.filter(
         expiry_date__gte=today,
