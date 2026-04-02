@@ -1,21 +1,63 @@
 .transactions-page {
-  font-family: 'Arial', sans-serif; /* Match navbar font */
+  font-family: 'Manrope', sans-serif;
   padding: 20px;
 }
 
 .transactions-page h2 {
-  color: #2c3e50; /* Match navbar background */
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-transform: uppercase; /* Match navbar logo style */
-  letter-spacing: 1px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 1.4rem;
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+}
+
+.report-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.report-controls label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.report-controls input[type='month'] {
+  padding: 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.report-controls button {
+  padding: 8px 12px;
+  background: linear-gradient(120deg, #153e75, #1f6feb);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-controls button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.report-error {
+  color: var(--danger);
+  margin: 0 0 8px 0;
 }
 
 .transactions-page table {
   width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for a modern look */
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
   margin-top: 10px;
 }
 
@@ -27,22 +69,23 @@
 }
 
 .transactions-page th {
-  background-color: #34495e; /* Match navbar hover background */
+  background: linear-gradient(120deg, #153e75, #1f6feb);
   color: white; /* High contrast for header text */
-  text-transform: uppercase; /* Match navbar header style */
+  font-size: 0.8rem;
+  letter-spacing: 0.4px;
 }
 
 .transactions-page td {
-  background-color: #f8f9fa; /* Light gray row background */
-  color: #2c3e50; /* Dark text for better readability */
+  background-color: #fff;
+  color: var(--text);
 }
 
 .transactions-page tr:nth-child(even) td {
-  background-color: #ecf0f1; /* Slightly lighter alternating rows */
+  background-color: #f8fbff;
 }
 
 .transactions-page tr:hover td {
-  background-color: #dfe6e9; /* Row hover effect */
+  background-color: #eef5ff;
 }
 
 /* Transaction Input Styling */

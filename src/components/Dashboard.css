@@ -1,8 +1,10 @@
 .dashboard-content {
-  padding: 20px;
-  background-color: #f3f6fb; /* Faint dark blue background */
-  box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.25); /* Subtle inner shadow */
-  border-radius: 10px; /* Optional: Slightly rounded edges for a modern look */
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid rgba(16, 42, 67, 0.08);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
+  animation: fadeIn 0.35s ease-out;
 }
 
 .profile-switcher {
@@ -33,7 +35,7 @@
 .financial-overview {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 
 .overview-card {
@@ -42,14 +44,14 @@
   align-items: center;
   justify-content: center;
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for modern look */
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s, box-shadow 0.3s ease;
 }
 
 .overview-card:hover {
-  transform: scale(1.02); /* Slight zoom effect */
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15); /* More prominent shadow on hover */
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 /* Income Card Styling */
@@ -79,9 +81,9 @@
 
 .slider {
   flex: 1;
-  height: 4px;
-  background: #ddd;
-  border-radius: 2px;
+  height: 8px;
+  background: linear-gradient(90deg, #1f6feb, #0f9d58);
+  border-radius: 999px;
   appearance: none;
 }
 
@@ -140,20 +142,19 @@
 
 .floating-button {
   padding: 12px 20px;
-  background-color: #2c3e50;
+  background: linear-gradient(120deg, #1f6feb, #153e75);
   color: white;
   font-size: 16px;
   font-weight: bold;
   border: none;
   border-radius: 50px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .floating-button:hover {
-  background-color: #1a2b3c;
-  transform: scale(1.05);
+  transform: translateY(-2px);
 }
 
 .income-slider-container {
@@ -161,4 +162,15 @@
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -3,23 +3,24 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin: 12px 0;
-  padding: 10px 14px;
-  border-radius: 8px;
+  margin: 12px 0 16px;
+  padding: 11px 14px;
+  border-radius: 12px;
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .notification-banner.info {
-  background: #2c3e50;
+  background: linear-gradient(120deg, #153e75, #1f6feb);
 }
 
 .notification-banner.success {
-  background: #2e7d32;
+  background: linear-gradient(120deg, #0f7f49, #0f9d58);
 }
 
 .notification-banner.error {
-  background: #c62828;
+  background: linear-gradient(120deg, #a61e1e, #c62828);
 }
 
 .notification-banner button {
@@ -29,4 +30,3 @@
   font-size: 1rem;
   cursor: pointer;
 }
-

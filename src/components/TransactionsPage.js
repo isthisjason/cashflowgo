@@ -6,6 +6,9 @@ import './TransactionsPage.css';
 function TransactionsPage({ profile }) {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [reportMonth, setReportMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,9 +47,52 @@ function TransactionsPage({ profile }) {
     return <p>Loading...</p>;
   }
 
+  const downloadMonthlyReport = async () => {
+    try {
+      setIsDownloading(true);
+      setDownloadError('');
+      const response = await axios.get('/finances/reports/monthly-csv/', {
+        params: {
+          profile_type: profile.toLowerCase(),
+          month: reportMonth,
+        },
+        responseType: 'blob',
+      });
+
+      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const safeMonth = reportMonth || new Date().toISOString().slice(0, 7);
+      link.href = url;
+      link.setAttribute('download', `cashflowgo-${profile.toLowerCase()}-${safeMonth}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading monthly report:', error);
+      setDownloadError('Failed to download monthly report. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   return (
     <div className="transactions-page">
       <h2>Transactions for Profile: {profile}</h2> {/* Display current profile */}
+      <div className="report-controls">
+        <label htmlFor="report-month">Monthly Report:</label>
+        <input
+          id="report-month"
+          type="month"
+          value={reportMonth}
+          onChange={(e) => setReportMonth(e.target.value)}
+        />
+        <button type="button" onClick={downloadMonthlyReport} disabled={isDownloading || !reportMonth}>
+          {isDownloading ? 'Preparing CSV...' : 'Download CSV'}
+        </button>
+      </div>
+      {downloadError && <p className="report-error">{downloadError}</p>}
       <table>
         <thead>
           <tr>

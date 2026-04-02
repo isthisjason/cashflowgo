@@ -16,6 +16,10 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from finances.utils import send_notification_email
 from finances.utils import process_subscription_reminders
 import logging
+import csv
+from datetime import datetime
+from django.http import HttpResponse
+from django.db.models import Sum
 
 # Configure logging (optional: configure in settings for better control)
 logger = logging.getLogger(__name__)
@@ -296,3 +300,73 @@ class BudgetView(APIView):
         else:
             logger.warning("Budget serializer errors=%s", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MonthlyReportCSVView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        profile_type = request.query_params.get("profile_type", "personal")
+        profile_serializer = ProfileTypeSerializer(data={"profile_type": profile_type})
+        if not profile_serializer.is_valid():
+            return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        profile_type = profile_serializer.validated_data["profile_type"]
+
+        month_param = request.query_params.get("month")
+        if month_param:
+            try:
+                report_month = datetime.strptime(month_param, "%Y-%m")
+            except ValueError:
+                return Response(
+                    {"month": ["Invalid format. Use YYYY-MM."]},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            report_month = datetime.utcnow()
+
+        start_date = report_month.replace(day=1).date()
+        if start_date.month == 12:
+            end_date = start_date.replace(year=start_date.year + 1, month=1, day=1)
+        else:
+            end_date = start_date.replace(month=start_date.month + 1, day=1)
+
+        transactions = (
+            Transaction.objects.filter(
+                user=request.user,
+                profile_type=profile_type,
+                date__gte=start_date,
+                date__lt=end_date,
+            )
+            .order_by("-date", "-id")
+        )
+
+        totals = transactions.values("transaction_type").annotate(total=Sum("amount"))
+        income_total = next((row["total"] for row in totals if row["transaction_type"] == "Income"), 0) or 0
+        expense_total = next((row["total"] for row in totals if row["transaction_type"] == "Expense"), 0) or 0
+        net_total = income_total - expense_total
+
+        filename = f"cashflowgo-{profile_type}-{start_date.strftime('%Y-%m')}.csv"
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+
+        writer = csv.writer(response)
+        writer.writerow(["CashFlowGo Monthly Report"])
+        writer.writerow(["Profile", profile_type])
+        writer.writerow(["Month", start_date.strftime("%Y-%m")])
+        writer.writerow(["Income Total", income_total])
+        writer.writerow(["Expense Total", expense_total])
+        writer.writerow(["Net Total", net_total])
+        writer.writerow([])
+        writer.writerow(["Date", "Type", "Category", "Amount"])
+
+        for txn in transactions:
+            writer.writerow([txn.date.isoformat(), txn.transaction_type, txn.category, txn.amount])
+
+        logger.info(
+            "CSV report generated user_id=%s profile_type=%s month=%s rows=%s",
+            request.user.id,
+            profile_type,
+            start_date.strftime("%Y-%m"),
+            transactions.count(),
+        )
+        return response

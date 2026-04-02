@@ -1,13 +1,12 @@
 .App {
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
+  font-family: 'Manrope', sans-serif;
   min-height: 100vh;
 }
 
 .dashboard-container {
   max-width: 1200px;
   margin: auto;
-  padding: 40px 20px;
+  padding: 30px 20px 48px;
 }
 
 .profile-switcher {
@@ -32,15 +31,17 @@
 }
 
 .overview-section {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 22px;
+  margin-bottom: 22px;
 }
 
 .dashboard-content {
-  margin-top: 30px;
+  margin-top: 14px;
 }
 
 h2 {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  font-family: 'Sora', sans-serif;
+  letter-spacing: 0.3px;
+  margin-top: 12px;
+  margin-bottom: 20px;
 }

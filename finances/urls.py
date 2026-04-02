@@ -5,6 +5,7 @@ from .views import AdjustedIncomeView
 from .views import AllTransactionsView
 from .views import SubscriptionListCreateView, SubscriptionDetailView
 from .views import BudgetView
+from .views import MonthlyReportCSVView
 
 urlpatterns = [
     # add transaction button   
@@ -25,4 +26,7 @@ urlpatterns = [
 
     # budget 
     path('budget/', BudgetView.as_view(), name='budget'),
+
+    # monthly csv report
+    path('reports/monthly-csv/', MonthlyReportCSVView.as_view(), name='monthly-report-csv'),
 ]

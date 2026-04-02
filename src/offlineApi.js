@@ -99,6 +99,14 @@ const calculateCurrentSpending = (db, profile) =>
     .filter((txn) => txn.profile_type === profile && txn.transaction_type === 'Expense' && txn.user === currentUserId())
     .reduce((sum, txn) => sum + parseFloat(txn.amount || 0), 0);
 
+const asCsvCell = (value) => {
+  const text = String(value ?? '');
+  if (text.includes(',') || text.includes('"') || text.includes('\n')) {
+    return `"${text.replace(/"/g, '""')}"`;
+  }
+  return text;
+};
+
 const normalizeRequestData = (config) => {
   if (!config?.data) return {};
   if (typeof config.data === 'string') {
@@ -253,6 +261,40 @@ export const tryOfflineMock = (config, baseURL) => {
     db.subscriptions = db.subscriptions.filter((s) => s.id !== id);
     saveOfflineDb(db);
     return responseFrom(config, {}, 204, 'No Content');
+  }
+
+  if (method === 'get' && path.endsWith('/finances/reports/monthly-csv/')) {
+    const profile = getProfileType(config);
+    const month = config?.params?.month || today().slice(0, 7);
+    const rows = db.transactions.filter(
+      (txn) =>
+        txn.user === currentUserId() &&
+        txn.profile_type === profile &&
+        String(txn.date || '').startsWith(month)
+    );
+    const incomeTotal = rows
+      .filter((txn) => txn.transaction_type === 'Income')
+      .reduce((sum, txn) => sum + Number(txn.amount || 0), 0);
+    const expenseTotal = rows
+      .filter((txn) => txn.transaction_type === 'Expense')
+      .reduce((sum, txn) => sum + Number(txn.amount || 0), 0);
+    const netTotal = incomeTotal - expenseTotal;
+
+    const lines = [
+      'CashFlowGo Monthly Report',
+      `Profile,${asCsvCell(profile)}`,
+      `Month,${asCsvCell(month)}`,
+      `Income Total,${asCsvCell(incomeTotal.toFixed(2))}`,
+      `Expense Total,${asCsvCell(expenseTotal.toFixed(2))}`,
+      `Net Total,${asCsvCell(netTotal.toFixed(2))}`,
+      '',
+      'Date,Type,Category,Amount',
+      ...rows.map((txn) =>
+        [txn.date, txn.transaction_type, txn.category, txn.amount].map(asCsvCell).join(',')
+      ),
+    ];
+
+    return responseFrom(config, lines.join('\n'));
   }
 
   return null;

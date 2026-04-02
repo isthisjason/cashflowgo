@@ -1,22 +1,23 @@
 /* General Table Styling */
 .recent-transactions {
-  font-family: 'Arial', sans-serif; /* Match the navbar font */
+  font-family: 'Manrope', sans-serif;
   margin-top: 20px;
 }
 
 .recent-transactions h2 {
-  color: #2c3e50; /* Match the navbar background */
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-  text-transform: uppercase; /* Make it match the navbar logo style */
-  letter-spacing: 1px;
+  color: var(--text);
+  font-family: 'Sora', sans-serif;
+  font-size: 1.35rem;
+  margin-bottom: 12px;
 }
 
 .recent-transactions table {
   width: 100%;
-  border-collapse: collapse;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow for a modern look */
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .recent-transactions th, 
@@ -27,22 +28,23 @@
 }
 
 .recent-transactions th {
-  background-color: #34495e; /* Match navbar hover background color */
+  background: linear-gradient(120deg, #153e75, #1f6feb);
   color: white; /* White text for contrast */
-  text-transform: uppercase; /* Consistent with navbar style */
+  font-size: 0.8rem;
+  letter-spacing: 0.4px;
 }
 
 .recent-transactions td {
-  background-color: #f8f9fa; /* Light gray background for rows */
-  color: #2c3e50; /* Dark text for readability */
+  background-color: #fff;
+  color: var(--text);
 }
 
 .recent-transactions tr:nth-child(even) td {
-  background-color: #ecf0f1; /* Slightly lighter gray for alternating rows */
+  background-color: #f8fbff;
 }
 
 .recent-transactions tr:hover td {
-  background-color: #dfe6e9; /* Add a hover effect for rows */
+  background-color: #eef5ff;
 }
 
 /* Responsive Design */

@@ -1,20 +1,22 @@
 /* Summary Chart Container */
 .summary-chart {
-  max-width: 1000px; /* Increase the width for a larger graph */
+  max-width: 1000px;
   margin: 20px auto;
   padding: 20px;
-  background-color: #ffffff; /* White background for contrast */
-  border-radius: 10px; /* Rounded corners for a modern look */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  font-family: 'Arial', sans-serif;
+  background: var(--surface);
+  border: 1px solid rgba(16, 42, 67, 0.08);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  font-family: 'Manrope', sans-serif;
 }
 
 /* Heading Style */
 .summary-chart h2 {
   text-align: center;
-  font-size: 1.8rem;
-  color: #2c3e50; /* Darker text color for clarity */
+  font-size: 1.5rem;
+  color: var(--text);
   margin-bottom: 20px;
+  font-family: 'Sora', sans-serif;
 }
 
 /* Timeframe Selector */
@@ -27,26 +29,27 @@
 
 .timeframe-selector label {
   margin-right: 10px;
-  font-size: 1rem;
-  font-weight: 500;
-  color: #34495e; /* Subtle dark gray */
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--muted);
 }
 
 .timeframe-dropdown {
   padding: 10px 15px;
-  border: 1px solid #dcdcdc; /* Light gray border */
-  border-radius: 5px;
-  font-size: 1rem;
-  color: #2c3e50;
-  background-color: #f9f9f9; /* Soft background for dropdown */
+  border: 1px solid #d0d7de;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: var(--text);
+  background-color: var(--surface-soft);
   cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .timeframe-dropdown:hover,
 .timeframe-dropdown:focus {
-  border-color: #1abc9c; /* Highlight border */
-  box-shadow: 0 0 5px rgba(26, 188, 156, 0.5); /* Subtle focus glow */
+  border-color: var(--brand);
+  box-shadow: 0 0 0 4px var(--ring);
+  outline: none;
 }
 
 /* Chart Container */
@@ -61,8 +64,8 @@
 /* No Data Message */
 .summary-chart p {
   text-align: center;
-  font-size: 1rem;
-  color: gray;
+  font-size: 0.95rem;
+  color: var(--muted);
   font-style: italic;
   margin-top: 15px;
 }
