@@ -52,8 +52,10 @@ python manage.py migrate
 ### 3) Frontend dependencies
 
 ```bash
-npm install
+npm ci
 ```
+
+Use `npm ci` with the committed `package-lock.json` for deterministic installs. Only use `npm install` when you intentionally add or update dependencies and want to refresh the lockfile.
 
 ### 4) Run app
 

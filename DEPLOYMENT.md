@@ -6,8 +6,10 @@ This guide is designed for a simple deployment path with minimal changes to proj
 
 - Ensure local app runs successfully:
   - `python manage.py migrate`
+  - `npm ci`
   - `npm run dev`
 - Commit latest migrations
+- Commit the latest `package-lock.json` if frontend dependencies changed
 - Set production environment variables
 
 ## 2) Required Environment Variables
