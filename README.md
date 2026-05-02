@@ -22,7 +22,8 @@ It includes profile-based budgeting, transaction tracking, subscription manageme
 
 - Frontend: React, Axios, React Router, Chart.js
 - Backend: Django, Django REST Framework
-- Database: SQLite (local)
+- Database: SQLite (local), PostgreSQL-ready for Docker/AWS
+- DevOps: Docker, Docker Compose, AWS deployment scaffold
 
 ## Project Structure
 
@@ -68,6 +69,16 @@ Note:
 - `npm run dev` starts frontend and attempts backend.
 - Backend startup requires Django packages installed in your Python environment.
 
+### Docker option
+
+Run the full local stack with React, Django, and PostgreSQL:
+
+```bash
+docker compose up --build
+```
+
+See [docs/DOCKER.md](./docs/DOCKER.md) for container commands.
+
 ## Environment Variables
 
 Create a local `.env` (or export variables in shell) based on `.env.example`.
@@ -85,6 +96,8 @@ Key vars:
 ## Deployment
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for a step-by-step Cloudflare Pages + Render deployment guide.
+
+See [docs/AWS_DEPLOYMENT.md](./docs/AWS_DEPLOYMENT.md) for the AWS scaffold using Docker, PostgreSQL/RDS, and S3 + CloudFront or Amplify for the frontend.
 
 ## Core Flows Checklist
 

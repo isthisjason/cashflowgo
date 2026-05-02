@@ -2,20 +2,22 @@
 
 This repo is ready to move from local SQLite/Render-style config toward AWS with:
 
-- React frontend on AWS Amplify Hosting
-- Django API on AWS App Runner
+- React frontend on S3 + CloudFront or AWS Amplify Hosting
+- Django API on ECS/Fargate using the backend Docker image
 - PostgreSQL on Amazon RDS
+
+`Dockerfile` and `docker-compose.yml` provide the local container proof point before moving the backend image to AWS.
 
 ## 1) Backend Database Prep
 
-Create an RDS PostgreSQL database, then set these backend environment variables in App Runner:
+Create an RDS PostgreSQL database, then set these backend environment variables for the ECS/Fargate backend task:
 
 ```bash
 DJANGO_SECRET_KEY=<long-random-secret>
 DJANGO_DEBUG=false
-DJANGO_ALLOWED_HOSTS=<your-app-runner-host>,<optional-custom-api-domain>
-CORS_ALLOWED_ORIGINS=https://<your-amplify-host-or-custom-domain>
-CSRF_TRUSTED_ORIGINS=https://<your-amplify-host-or-custom-domain>
+DJANGO_ALLOWED_HOSTS=<your-api-domain-or-load-balancer-host>
+CORS_ALLOWED_ORIGINS=https://<your-cloudfront-or-amplify-domain>
+CSRF_TRUSTED_ORIGINS=https://<your-cloudfront-or-amplify-domain>
 DATABASE_URL=postgresql://<user>:<password>@<rds-host>:5432/<database-name>
 DATABASE_SSL_REQUIRE=true
 DATABASE_CONN_MAX_AGE=60
@@ -25,7 +27,7 @@ EMAIL_NOTIFICATIONS_ENABLED=false
 Notes:
 
 - Keep `DATABASE_URL` unset locally if you want to keep using `db.sqlite3`.
-- Set `DATABASE_SSL_REQUIRE=true` for RDS/App Runner production traffic.
+- Set `DATABASE_SSL_REQUIRE=true` for RDS production traffic.
 - If your database URL already includes `?sslmode=...`, that value wins.
 
 ## 2) Verify Database Config
@@ -48,18 +50,20 @@ Then run:
 python manage.py migrate
 ```
 
-For App Runner, the backend start command can remain similar to Render:
+For ECS/Fargate, use the root `Dockerfile` as the backend image and run migrations as a one-off task or release step before starting Gunicorn.
+
+The container command is:
 
 ```bash
-python manage.py migrate && gunicorn cashflowgo.wsgi --bind 0.0.0.0:$PORT
+gunicorn cashflowgo.wsgi:application --bind 0.0.0.0:8000
 ```
 
 ## 3) Frontend Environment
 
-In Amplify Hosting, set:
+For S3 + CloudFront or Amplify Hosting, build the React app with:
 
 ```bash
-REACT_APP_API_BASE_URL=https://<your-app-runner-host>/api
+REACT_APP_API_BASE_URL=https://<your-api-domain>/api
 REACT_APP_ENABLE_OFFLINE_FALLBACK=0
 ```
 
