@@ -4,7 +4,7 @@ Django settings for cashflowgo project.
 
 import os
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, unquote, urlparse
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,9 +13,20 @@ DEBUG = os.getenv("DJANGO_DEBUG", "true").lower() in {"1", "true", "yes", "on"}
 EMAIL_NOTIFICATIONS_ENABLED = os.getenv("EMAIL_NOTIFICATIONS_ENABLED", "false").lower() in {"1", "true", "yes", "on"}
 
 
+def bool_env(name, default="false"):
+    return os.getenv(name, default).lower() in {"1", "true", "yes", "on"}
+
+
 def csv_env(name, default=""):
     raw = os.getenv(name, default)
     return [item.strip() for item in raw.split(",") if item.strip()]
+
+
+def int_env(name, default):
+    try:
+        return int(os.getenv(name, default))
+    except (TypeError, ValueError):
+        return int(default)
 
 
 ALLOWED_HOSTS = csv_env(
@@ -85,14 +96,24 @@ database_url = os.getenv("DATABASE_URL")
 if database_url:
     parsed = urlparse(database_url)
     if parsed.scheme in {"postgres", "postgresql"}:
+        query_options = dict(parse_qsl(parsed.query))
+        database_options = {}
+        if query_options.get("sslmode"):
+            database_options["sslmode"] = query_options["sslmode"]
+        elif bool_env("DATABASE_SSL_REQUIRE", "true" if not DEBUG else "false"):
+            database_options["sslmode"] = "require"
+
         DATABASES["default"] = {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": parsed.path.lstrip("/"),
-            "USER": parsed.username or "",
-            "PASSWORD": parsed.password or "",
+            "NAME": unquote(parsed.path.lstrip("/")),
+            "USER": unquote(parsed.username or ""),
+            "PASSWORD": unquote(parsed.password or ""),
             "HOST": parsed.hostname or "",
             "PORT": str(parsed.port or "5432"),
+            "CONN_MAX_AGE": int_env("DATABASE_CONN_MAX_AGE", "60"),
         }
+        if database_options:
+            DATABASES["default"]["OPTIONS"] = database_options
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
