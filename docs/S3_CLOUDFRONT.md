@@ -104,12 +104,33 @@ Check:
 
 Some API-backed features may not work until the Django backend is deployed to AWS.
 
-## 8) Update After Backend Deployment
+## 8) Route API Traffic Through CloudFront
 
-After the backend has an AWS API URL:
+After the backend is deployed on ECS/Fargate behind an ALB, add a second CloudFront origin for the ALB and create a behavior for `/api/*`.
+
+Backend origin:
+
+```text
+Origin domain: <alb-domain>
+Protocol: HTTP only
+HTTP port: 80
+Origin path: blank
+```
+
+API behavior:
+
+```text
+Path pattern: /api/*
+Origin: backend ALB origin
+Allowed methods: GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE
+Cache policy: CachingDisabled
+Origin request policy: AllViewerExceptHostHeader
+```
+
+Then rebuild the frontend so API calls use the same CloudFront HTTPS domain:
 
 ```bash
-REACT_APP_API_BASE_URL=https://<api-domain>/api \
+REACT_APP_API_BASE_URL=https://<cloudfront-domain>/api \
 REACT_APP_ENABLE_OFFLINE_FALLBACK=0 \
 npm run build
 aws s3 sync build/ "s3://$BUCKET_NAME" --delete
