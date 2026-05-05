@@ -158,6 +158,10 @@ Core deployed app flows:
 - Budget view
 - Subscriptions
 
+## Redeploying Updates
+
+For day-to-day updates after the first deployment, see [AWS_REDEPLOY.md](./AWS_REDEPLOY.md).
+
 ## Follow-Up Hardening
 
 Later production cleanup:
