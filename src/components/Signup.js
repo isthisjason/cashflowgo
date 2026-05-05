@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axiosConfig';
-import './Signup.css'; // Use a dedicated Signup.css file
+import './Signup.css';
 
 function Signup() {
-  const [username, setUsername] = useState(''); // New username state
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -12,7 +12,9 @@ function Signup() {
   const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const handleSignup = async () => {
+  const handleSignup = async (event) => {
+    event.preventDefault();
+
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       setSuccess('');
@@ -20,8 +22,8 @@ function Signup() {
     }
 
     try {
-      const response = await axios.post('/accounts/signup/', {
-        username, // Include username in the request
+      await axios.post('/accounts/signup/', {
+        username,
         email,
         password,
       });
@@ -36,38 +38,95 @@ function Signup() {
 
   return (
     <div className="signup-container">
-      <h1>Sign Up</h1>
-      <input
-        type="text"
-        placeholder="Username" // Input field for username
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        className="signup-input"
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="signup-input"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="signup-input"
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        className="signup-input"
-      />
-      {error && <p className="signup-error">{error}</p>}
-      {success && <p className="signup-success">{success}</p>}
-      <button onClick={handleSignup} className="signup-button">Sign Up</button>
+      <main className="signup-shell" aria-labelledby="signup-title">
+        <section className="signup-brand-panel" aria-label="CashFlowGo onboarding summary">
+          <p className="signup-eyebrow">Start with clarity</p>
+          <h1 id="signup-title">CashFlowGo</h1>
+          <p className="signup-subtitle">
+            Create your account to organize personal, family, and business cash flow from one secure place.
+          </p>
+          <div className="signup-trust-list" aria-label="Account benefits">
+            <span>Multi-profile tracking</span>
+            <span>Subscription reminders</span>
+            <span>Budget visibility</span>
+          </div>
+        </section>
+
+        <form className="signup-card" onSubmit={handleSignup}>
+          <div className="signup-card-header">
+            <p className="signup-card-kicker">Create account</p>
+            <h2>Sign up</h2>
+          </div>
+
+          <div className="signup-field">
+            <label htmlFor="signup-username">Username</label>
+            <input
+              id="signup-username"
+              type="text"
+              placeholder="Choose a username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="signup-input"
+              autoComplete="username"
+              required
+            />
+          </div>
+
+          <div className="signup-field">
+            <label htmlFor="signup-email">Email</label>
+            <input
+              id="signup-email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="signup-input"
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div className="signup-field">
+            <label htmlFor="signup-password">Password</label>
+            <input
+              id="signup-password"
+              type="password"
+              placeholder="Create a password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="signup-input"
+              autoComplete="new-password"
+              required
+            />
+          </div>
+
+          <div className="signup-field">
+            <label htmlFor="signup-confirm-password">Confirm password</label>
+            <input
+              id="signup-confirm-password"
+              type="password"
+              placeholder="Repeat your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="signup-input"
+              autoComplete="new-password"
+              required
+            />
+          </div>
+
+          {error && <p className="signup-error" role="alert">{error}</p>}
+          {success && <p className="signup-success" role="status">{success}</p>}
+
+          <button type="submit" className="signup-button">Sign Up</button>
+
+          <p className="signup-switch">
+            Already have an account?
+            <button type="button" onClick={() => navigate('/login')} className="signup-link-button">
+              Log in
+            </button>
+          </p>
+        </form>
+      </main>
     </div>
   );
 }

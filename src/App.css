@@ -9,6 +9,12 @@
   padding: 30px 20px 48px;
 }
 
+.dashboard-container.auth-route-container {
+  max-width: none;
+  min-height: 100vh;
+  padding: 0;
+}
+
 .profile-switcher {
   display: flex;
   gap: 10px;

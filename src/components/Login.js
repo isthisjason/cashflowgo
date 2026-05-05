@@ -9,34 +9,32 @@ function Login({ onLogin }) {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    setError('');
+
     try {
-      // Send login request to the backend
       const response = await axios.post('/accounts/login/', {
         email,
         password,
       });
-      console.log('Login response:', response.data); // Debugging backend response
+      console.log('Login response:', response.data);
 
-      // Save the user data to localStorage
       localStorage.setItem('loggedInUser', JSON.stringify(response.data.user));
-      console.log('Logged in user saved:', localStorage.getItem('loggedInUser')); // Debugging localStorage
+      console.log('Logged in user saved:', localStorage.getItem('loggedInUser'));
 
-      // Save the CSRF token in cookies for future requests
       const csrfToken = response.data.csrf_token;
       if (csrfToken) {
         document.cookie = `csrftoken=${csrfToken}; path=/`;
-        console.log('CSRF token set:', csrfToken); // Debugging CSRF token
+        console.log('CSRF token set:', csrfToken);
       }
 
-      // Call onLogin callback to update the app state
       if (onLogin) onLogin();
 
-      // Navigate to home page after successful login
-      console.log('Redirecting to dashboard'); // Debugging navigation
+      console.log('Redirecting to dashboard');
       navigate('/');
     } catch (err) {
-      console.error('Login error:', err.response?.data || err); // Debugging error response
+      console.error('Login error:', err.response?.data || err);
       if (!err.response) {
         setError('Cannot reach API server. Start backend at http://127.0.0.1:8000 and try again.');
       } else {
@@ -46,32 +44,72 @@ function Login({ onLogin }) {
   };
 
   const handleSignupRedirect = () => {
-    console.log('Redirecting to signup'); // Debugging
-    navigate('/signup'); // Navigate to signup page
+    console.log('Redirecting to signup');
+    navigate('/signup');
   };
 
   return (
     <div className="login-container">
-      <h1 className="app-title">CashFlowGo</h1>
-      <div className="login-box">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="login-input"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="login-input"
-        />
-        {error && <p className="login-error">{error}</p>}
-        <button onClick={handleLogin} className="button">Login</button>
-        <button onClick={handleSignupRedirect} className="button">Sign Up</button>
-      </div>
+      <main className="login-shell" aria-labelledby="login-title">
+        <section className="login-brand-panel" aria-label="CashFlowGo security summary">
+          <p className="login-eyebrow">Personal finance workspace</p>
+          <h1 className="app-title" id="login-title">CashFlowGo</h1>
+          <p className="login-subtitle">
+            Sign in to review spending, budgets, subscriptions, and cash flow in one focused dashboard.
+          </p>
+          <div className="login-trust-list" aria-label="Account protections">
+            <span>Secure session</span>
+            <span>Budget alerts</span>
+            <span>Private profiles</span>
+          </div>
+        </section>
+
+        <form className="login-box" onSubmit={handleLogin}>
+          <div className="login-box-header">
+            <p className="login-box-kicker">Welcome back</p>
+            <h2>Log in</h2>
+          </div>
+
+          <div className="login-field">
+            <label htmlFor="login-email">Email</label>
+            <input
+              id="login-email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="login-input"
+              autoComplete="email"
+              required
+            />
+          </div>
+
+          <div className="login-field">
+            <label htmlFor="login-password">Password</label>
+            <input
+              id="login-password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="login-input"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          {error && <p className="login-error" role="alert">{error}</p>}
+
+          <button type="submit" className="button button-primary">Login</button>
+
+          <p className="login-switch">
+            New to CashFlowGo?
+            <button type="button" onClick={handleSignupRedirect} className="login-link-button">
+              Create an account
+            </button>
+          </p>
+        </form>
+      </main>
     </div>
   );
 }

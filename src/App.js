@@ -81,7 +81,7 @@ function App() {
             toggleBudgetAlert={toggleBudgetAlert} // Pass toggle function
           />
         )}
-        <div className="dashboard-container">
+        <div className={`dashboard-container ${!isAuthenticated ? 'auth-route-container' : ''}`}>
           {showBudgetAlert && <BudgetAlert profile={profile} />} {/* Pass profile */}
           <Routes>
             <Route
