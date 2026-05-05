@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CashFlowGo">
+  <rect width="64" height="64" rx="14" fill="#09090B"/>
+  <path d="M10 43.5L22.5 31L33.5 37.5L50.5 19.5" fill="none" stroke="#60A5FA" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="22.5" cy="31" r="5.5" fill="#FBBF24"/>
+  <circle cx="50.5" cy="19.5" r="5.5" fill="#FBBF24"/>
+  <path d="M15 48H52" fill="none" stroke="#F8FAFC" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+  <path d="M14 18.5C14 14.4 17.4 11 21.5 11H32" fill="none" stroke="#F8FAFC" stroke-width="4" stroke-linecap="round" opacity="0.95"/>
+  <path d="M32 11H43" fill="none" stroke="#2563EB" stroke-width="4" stroke-linecap="round"/>
+</svg>
