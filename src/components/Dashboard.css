@@ -65,35 +65,8 @@
 .overview-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.2s, box-shadow 0.3s ease;
-}
-
-.overview-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-/* Income Card Styling */
-.income-card {
-  background-color: #d4edda; /* Soft green */
-  color: #155724; /* Darker green for text */
-}
-
-/* Expense Card Styling */
-.expense-card {
-  background-color: #f8d7da; /* Soft red */
-  color: #721c24; /* Darker red for text */
-}
-
-/* Net Balance Card Styling */
-.net-balance-card {
-  background-color: #d1ecf1; /* Soft blue */
-  color: #0c5460; /* Darker blue for text */
 }
 
 .income-control {
