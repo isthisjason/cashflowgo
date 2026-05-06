@@ -159,6 +159,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
                 <input
                   id="income-slider"
                   type="range"
+                  aria-label="Adjust total income"
                   min="0"
                   max="250000"
                   value={financialData.income}
@@ -199,7 +200,8 @@ function Dashboard({ profile, setIsAuthenticated }) {
           onClick={() => setIsAddTransactionOpen(true)}
           className="floating-button transaction-button"
         >
-          + Transaction
+          <span className="floating-button-symbol" aria-hidden="true">+</span>
+          Transaction
         </button>
       </div>
     </div>
