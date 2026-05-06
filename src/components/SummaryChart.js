@@ -1,16 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Legend, Tooltip } from 'chart.js';
 import './SummaryChart.css';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
+
+const chartColors = {
+  income: '#22c55e',
+  expenses: '#ef4444',
+  text: '#d4d4d8',
+  muted: '#a1a1aa',
+  grid: 'rgba(255, 255, 255, 0.08)',
+};
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: chartColors.text,
+        boxWidth: 12,
+        boxHeight: 12,
+        font: {
+          family: 'IBM Plex Sans',
+          weight: '600',
+        },
+      },
+    },
+    tooltip: {
+      backgroundColor: 'rgba(9, 9, 11, 0.94)',
+      borderColor: 'rgba(255, 255, 255, 0.16)',
+      borderWidth: 1,
+      titleColor: '#ffffff',
+      bodyColor: chartColors.text,
+      padding: 12,
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        color: chartColors.muted,
+      },
+      grid: {
+        color: chartColors.grid,
+      },
+    },
+    y: {
+      ticks: {
+        color: chartColors.muted,
+      },
+      grid: {
+        color: chartColors.grid,
+      },
+    },
+  },
+};
 
 function SummaryChart({ profile, transactions, timeframe, setTimeframe }) {
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
-      { label: 'Income', data: [], backgroundColor: 'green' },
-      { label: 'Expenses', data: [], backgroundColor: 'red' },
+      { label: 'Income', data: [], backgroundColor: chartColors.income, borderRadius: 8 },
+      { label: 'Expenses', data: [], backgroundColor: chartColors.expenses, borderRadius: 8 },
     ],
   });
   const [hasData, setHasData] = useState(false);
@@ -61,8 +113,8 @@ function SummaryChart({ profile, transactions, timeframe, setTimeframe }) {
       setChartData({
         labels,
         datasets: [
-          { label: 'Income', data: incomeData, backgroundColor: 'green' },
-          { label: 'Expenses', data: expenseData, backgroundColor: 'red' },
+          { label: 'Income', data: incomeData, backgroundColor: chartColors.income, borderRadius: 8 },
+          { label: 'Expenses', data: expenseData, backgroundColor: chartColors.expenses, borderRadius: 8 },
         ],
       });
     } else {
@@ -70,8 +122,8 @@ function SummaryChart({ profile, transactions, timeframe, setTimeframe }) {
       setChartData({
         labels: [],
         datasets: [
-          { label: 'Income', data: [], backgroundColor: 'green' },
-          { label: 'Expenses', data: [], backgroundColor: 'red' },
+          { label: 'Income', data: [], backgroundColor: chartColors.income, borderRadius: 8 },
+          { label: 'Expenses', data: [], backgroundColor: chartColors.expenses, borderRadius: 8 },
         ],
       });
     }
@@ -84,23 +136,30 @@ function SummaryChart({ profile, transactions, timeframe, setTimeframe }) {
 
   return (
     <div className="summary-chart">
-      <h2>{timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Summary</h2>
-      <div className="timeframe-selector">
-        <label htmlFor="timeframe">Select Timeframe:</label>
-        <select
-          id="timeframe"
-          value={timeframe}
-          onChange={handleTimeframeChange}
-          className="timeframe-dropdown"
-        >
-          <option value="weekly">Weekly</option>
-          <option value="monthly">Monthly</option>
-          <option value="yearly">Yearly</option>
-        </select>
+      <div className="summary-chart-header">
+        <div>
+          <p className="summary-chart-eyebrow">Cash flow trend</p>
+          <h2>{timeframe.charAt(0).toUpperCase() + timeframe.slice(1)} Summary</h2>
+        </div>
+        <div className="timeframe-selector">
+          <label htmlFor="timeframe">Timeframe</label>
+          <select
+            id="timeframe"
+            value={timeframe}
+            onChange={handleTimeframeChange}
+            className="timeframe-dropdown"
+          >
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
       </div>
-      <Bar data={chartData} />
+      <div className="summary-chart-canvas">
+        <Bar data={chartData} options={chartOptions} />
+      </div>
       {!hasData && (
-        <p style={{ textAlign: 'center', color: 'gray', fontStyle: 'italic', marginTop: '-30px' }}>
+        <p className="summary-chart-empty">
           No data available for this profile.
         </p>
       )}

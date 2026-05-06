@@ -1,71 +1,109 @@
-/* Summary Chart Container */
 .summary-chart {
   max-width: 1000px;
-  margin: 20px auto;
-  padding: 20px;
-  background: var(--surface);
-  border: 1px solid rgba(16, 42, 67, 0.08);
-  border-radius: var(--radius-md);
+  margin: 22px auto;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(39, 39, 42, 0.74), rgba(15, 23, 42, 0.78));
   box-shadow: var(--shadow-sm);
-  font-family: 'Manrope', sans-serif;
+  backdrop-filter: blur(16px);
 }
 
-/* Heading Style */
-.summary-chart h2 {
-  text-align: center;
-  font-size: 1.5rem;
-  color: var(--text);
+.summary-chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
   margin-bottom: 20px;
-  font-family: 'Sora', sans-serif;
 }
 
-/* Timeframe Selector */
+.summary-chart-eyebrow {
+  margin: 0 0 8px;
+  color: var(--brand-light);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.summary-chart h2 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
 .timeframe-selector {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 20px;
+  gap: 10px;
 }
 
 .timeframe-selector label {
-  margin-right: 10px;
-  font-size: 0.95rem;
+  color: var(--muted-strong);
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--muted);
 }
 
 .timeframe-dropdown {
-  padding: 10px 15px;
-  border: 1px solid #d0d7de;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  background: rgba(9, 9, 11, 0.72);
   color: var(--text);
-  background-color: var(--surface-soft);
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
 
 .timeframe-dropdown:hover,
 .timeframe-dropdown:focus {
-  border-color: var(--brand);
+  border-color: var(--brand-light);
+  background: rgba(9, 9, 11, 0.86);
   box-shadow: 0 0 0 4px var(--ring);
   outline: none;
 }
 
-/* Chart Container */
-.canvas-container {
+.summary-chart-canvas {
   position: relative;
-  height: 400px;
-  width: 100%; /* Ensure the chart uses full width */
-  max-width: 950px; /* Limit the max width for larger graphs */
-  margin: 0 auto; /* Center the graph */
+  width: 100%;
+  height: 360px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  background: rgba(9, 9, 11, 0.34);
 }
 
-/* No Data Message */
-.summary-chart p {
-  text-align: center;
-  font-size: 0.95rem;
+.summary-chart-empty {
+  margin: 14px 0 0;
   color: var(--muted);
+  font-size: 0.95rem;
   font-style: italic;
-  margin-top: 15px;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .summary-chart {
+    padding: 18px;
+  }
+
+  .summary-chart-header {
+    flex-direction: column;
+  }
+
+  .timeframe-selector {
+    width: 100%;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .timeframe-dropdown {
+    width: 100%;
+  }
+
+  .summary-chart-canvas {
+    height: 320px;
+  }
 }
