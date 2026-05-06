@@ -142,7 +142,10 @@ function Dashboard({ profile, setIsAuthenticated }) {
 
   return (
     <div className="dashboard-content">
-      <h2>Current Profile: {profile.toUpperCase()}</h2>
+      <header className="dashboard-header">
+        <p className="dashboard-eyebrow">Current profile</p>
+        <h2>{profile.toUpperCase()}</h2>
+      </header>
       <NotificationBanner notification={notification} onDismiss={() => setNotification(null)} />
 
       {isLoading ? (
