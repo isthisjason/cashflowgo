@@ -1,9 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import { Chart as ChartJS, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Legend, Tooltip } from 'chart.js';
 import './SpendingHabits.css';
 
-ChartJS.register(BarElement, CategoryScale, LinearScale);
+ChartJS.register(BarElement, CategoryScale, LinearScale, Legend, Tooltip);
+
+const chartColors = {
+  spending: '#fbbf24',
+  text: '#d4d4d8',
+  muted: '#a1a1aa',
+  grid: 'rgba(255, 255, 255, 0.08)',
+};
+
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      labels: {
+        color: chartColors.text,
+        boxWidth: 12,
+        boxHeight: 12,
+        font: {
+          family: 'IBM Plex Sans',
+          weight: '600',
+        },
+      },
+    },
+    tooltip: {
+      backgroundColor: 'rgba(9, 9, 11, 0.94)',
+      borderColor: 'rgba(255, 255, 255, 0.16)',
+      borderWidth: 1,
+      titleColor: '#ffffff',
+      bodyColor: chartColors.text,
+      padding: 12,
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        color: chartColors.muted,
+      },
+      grid: {
+        color: chartColors.grid,
+      },
+    },
+    y: {
+      ticks: {
+        color: chartColors.muted,
+      },
+      grid: {
+        color: chartColors.grid,
+      },
+    },
+  },
+};
 
 function SpendingHabits({ profile, transactions }) {
   const [chartData, setChartData] = useState({
@@ -12,7 +63,8 @@ function SpendingHabits({ profile, transactions }) {
       {
         label: 'Spending by Category',
         data: [],
-        backgroundColor: '#f78c6c', // Soft red-orange color for bars
+        backgroundColor: chartColors.spending,
+        borderRadius: 8,
       },
     ],
   });
@@ -39,7 +91,8 @@ function SpendingHabits({ profile, transactions }) {
           {
             label: 'Spending by Category',
             data,
-            backgroundColor: '#f78c6c', // Bar color
+            backgroundColor: chartColors.spending,
+            borderRadius: 8,
           },
         ],
       });
@@ -51,7 +104,8 @@ function SpendingHabits({ profile, transactions }) {
           {
             label: 'Spending by Category',
             data: [],
-            backgroundColor: '#f78c6c',
+            backgroundColor: chartColors.spending,
+            borderRadius: 8,
           },
         ],
       });
@@ -62,7 +116,7 @@ function SpendingHabits({ profile, transactions }) {
     <div className="spending-habits">
       <h2>Spending by Category</h2>
       <div className="canvas-container">
-        <Bar data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />
+        <Bar data={chartData} options={chartOptions} />
       </div>
       {chartData.labels.length === 0 && (
         <p style={{ textAlign: 'center', color: 'gray', fontStyle: 'italic', marginTop: '20px' }}>
