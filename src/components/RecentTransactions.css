@@ -45,32 +45,44 @@
 
 .recent-transactions th, 
 .recent-transactions td {
-  border: 1px solid #ddd;
-  padding: 12px; /* Increase padding for better readability */
-  text-align: left; /* Align text to the left for consistency */
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 13px 14px;
+  text-align: left;
 }
 
 .recent-transactions th {
-  background: linear-gradient(120deg, #153e75, #1f6feb);
-  color: white; /* White text for contrast */
+  background: rgba(37, 99, 235, 0.16);
+  color: var(--muted-strong);
   font-size: 0.8rem;
-  letter-spacing: 0.4px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .recent-transactions td {
-  background-color: #fff;
+  background: rgba(9, 9, 11, 0.24);
   color: var(--text);
+  font-size: 0.95rem;
 }
 
 .recent-transactions tr:nth-child(even) td {
-  background-color: #f8fbff;
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .recent-transactions tr:hover td {
-  background-color: #eef5ff;
+  background: rgba(37, 99, 235, 0.12);
 }
 
-/* Responsive Design */
+.recent-transactions tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.recent-transactions td[colspan] {
+  color: var(--muted);
+  font-style: italic;
+}
+
 @media (max-width: 768px) {
   .recent-transactions h2 {
     font-size: 1.2rem;
@@ -78,6 +90,6 @@
 
   .recent-transactions th,
   .recent-transactions td {
-    padding: 10px; /* Adjust padding for smaller screens */
+    padding: 11px 12px;
   }
 }
