@@ -113,10 +113,12 @@
 }
 
 .transactions-page th {
-  background: linear-gradient(120deg, #153e75, #1f6feb);
-  color: white; /* High contrast for header text */
+  background: rgba(37, 99, 235, 0.16);
+  color: var(--muted-strong);
   font-size: 0.8rem;
-  letter-spacing: 0.4px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .transactions-page td {
