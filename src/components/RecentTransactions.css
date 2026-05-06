@@ -1,23 +1,46 @@
-/* General Table Styling */
 .recent-transactions {
-  font-family: 'Manrope', sans-serif;
-  margin-top: 20px;
+  margin: 22px auto;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(39, 39, 42, 0.74), rgba(15, 23, 42, 0.78));
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
+}
+
+.recent-transactions-header {
+  margin-bottom: 18px;
+}
+
+.recent-transactions-header p {
+  margin: 0 0 8px;
+  color: var(--brand-light);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .recent-transactions h2 {
-  color: var(--text);
-  font-family: 'Sora', sans-serif;
-  font-size: 1.35rem;
-  margin-bottom: 12px;
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.45rem;
+  line-height: 1.15;
+}
+
+.recent-transactions-table-shell {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(9, 9, 11, 0.34);
 }
 
 .recent-transactions table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  overflow: hidden;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  min-width: 520px;
 }
 
 .recent-transactions th, 
