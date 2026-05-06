@@ -1,54 +1,96 @@
 .transactions-page {
-  font-family: 'Manrope', sans-serif;
-  padding: 20px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(180deg, rgba(39, 39, 42, 0.74), rgba(15, 23, 42, 0.78));
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
+}
+
+.transactions-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.transactions-page-eyebrow {
+  margin: 0 0 8px;
+  color: var(--brand-light);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .transactions-page h2 {
-  color: var(--text);
-  font-family: 'Sora', sans-serif;
-  font-size: 1.4rem;
-  margin-bottom: 12px;
-  letter-spacing: 0.3px;
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 1.45rem;
+  line-height: 1.15;
 }
 
 .report-controls {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 14px;
   flex-wrap: wrap;
 }
 
 .report-controls label {
+  color: var(--muted-strong);
+  font-size: 0.9rem;
   font-weight: 700;
-  color: var(--text);
 }
 
 .report-controls input[type='month'] {
-  padding: 8px;
-  border: 1px solid #d0d7de;
-  border-radius: 10px;
-  background: var(--surface-soft);
+  min-height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  background: rgba(9, 9, 11, 0.72);
+  color: var(--text);
+  font-weight: 600;
 }
 
 .report-controls button {
-  padding: 8px 12px;
-  background: linear-gradient(120deg, #153e75, #1f6feb);
+  min-height: 40px;
+  border: 1px solid rgba(96, 165, 250, 0.42);
+  border-radius: var(--radius-md);
+  padding: 8px 13px;
+  background: var(--brand);
   color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.report-controls input[type='month']:focus,
+.report-controls button:focus-visible {
+  outline: none;
+  border-color: var(--brand-light);
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
+.report-controls button:hover:not(:disabled) {
+  border-color: rgba(147, 197, 253, 0.7);
+  background: var(--brand-dark);
 }
 
 .report-controls button:disabled {
-  opacity: 0.7;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .report-error {
-  color: var(--danger);
-  margin: 0 0 8px 0;
+  margin: 0 0 14px;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  background: var(--danger-soft);
+  color: #fca5a5;
+  font-weight: 600;
 }
 
 .transactions-page table {
@@ -122,8 +164,22 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .transactions-page {
+    padding: 18px;
+  }
+
+  .transactions-page-header {
+    flex-direction: column;
+  }
+
   .transactions-page h2 {
     font-size: 1.2rem; /* Adjust for smaller screens */
+  }
+
+  .report-controls,
+  .report-controls input[type='month'],
+  .report-controls button {
+    width: 100%;
   }
 
   .transactions-page th,

@@ -81,18 +81,23 @@ function TransactionsPage({ profile }) {
 
   return (
     <div className="transactions-page">
-      <h2>Transactions for Profile: {profile}</h2> {/* Display current profile */}
-      <div className="report-controls">
-        <label htmlFor="report-month">Monthly Report:</label>
-        <input
-          id="report-month"
-          type="month"
-          value={reportMonth}
-          onChange={(e) => setReportMonth(e.target.value)}
-        />
-        <button type="button" onClick={downloadMonthlyReport} disabled={isDownloading || !reportMonth}>
-          {isDownloading ? 'Preparing CSV...' : 'Download CSV'}
-        </button>
+      <div className="transactions-page-header">
+        <div>
+          <p className="transactions-page-eyebrow">Transaction history</p>
+          <h2>{profile} Profile</h2>
+        </div>
+        <div className="report-controls">
+          <label htmlFor="report-month">Monthly Report</label>
+          <input
+            id="report-month"
+            type="month"
+            value={reportMonth}
+            onChange={(e) => setReportMonth(e.target.value)}
+          />
+          <button type="button" onClick={downloadMonthlyReport} disabled={isDownloading || !reportMonth}>
+            {isDownloading ? 'Preparing CSV...' : 'Download CSV'}
+          </button>
+        </div>
       </div>
       {downloadError && <p className="report-error">{downloadError}</p>}
       <table>
