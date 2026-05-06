@@ -107,9 +107,10 @@
 
 .transactions-page th,
 .transactions-page td {
-  border: 1px solid #ddd; /* Match recent-transactions borders */
-  padding: 12px; /* Increased padding for readability */
-  text-align: left; /* Consistent alignment */
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 13px 14px;
+  text-align: left;
 }
 
 .transactions-page th {
@@ -122,16 +123,26 @@
 }
 
 .transactions-page td {
-  background-color: #fff;
+  background: rgba(9, 9, 11, 0.24);
   color: var(--text);
+  font-size: 0.95rem;
 }
 
 .transactions-page tr:nth-child(even) td {
-  background-color: #f8fbff;
+  background: rgba(255, 255, 255, 0.035);
 }
 
 .transactions-page tr:hover td {
-  background-color: #eef5ff;
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.transactions-page tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.transactions-page td[colspan] {
+  color: var(--muted);
+  font-style: italic;
 }
 
 /* Transaction Input Styling */
@@ -188,7 +199,7 @@
 
   .transactions-page th,
   .transactions-page td {
-    padding: 10px; /* Reduce padding for smaller screens */
+    padding: 11px 12px;
   }
 
   .transaction-input {
