@@ -99,7 +99,9 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
       <div className="subscription-input">
         <h3>Add New Subscription</h3>
         <div className="form-grid">
+          <label htmlFor="subscription-name">Subscription Name</label>
           <input
+            id="subscription-name"
             type="text"
             placeholder="Subscription Name"
             value={newSubscription.name}
@@ -108,7 +110,9 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
               name: e.target.value
             })}
           />
+          <label htmlFor="subscription-amount">Amount</label>
           <input
+            id="subscription-amount"
             type="number"
             placeholder="Amount"
             value={newSubscription.amount}
