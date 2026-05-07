@@ -1,20 +1,20 @@
-/* General Budget Alert Styling */
 .budget-alert {
-  background-color: #2c3e50; /* Match navbar background */
-  color: white; /* White text for contrast */
-  padding: 20px 30px;
-  border-radius: 10px; /* Rounded corners for modern look */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
   max-width: 800px;
-  margin: 20px auto; /* Center alignment */
-  font-family: 'Arial', sans-serif; /* Consistent font */
+  margin: 20px auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 22px;
+  background: linear-gradient(180deg, rgba(39, 39, 42, 0.74), rgba(15, 23, 42, 0.78));
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
 }
 
 .budget-alert h3 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #1abc9c; /* Modern green to match navbar */
-  margin-bottom: 20px;
+  margin: 0 0 20px;
+  color: var(--text-strong);
+  font-size: 1.45rem;
+  line-height: 1.15;
 }
 
 /* Form Inputs */
