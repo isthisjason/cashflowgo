@@ -14,22 +14,55 @@
   line-height: 1.15;
 }
 
+.subscription-table {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: rgba(9, 9, 11, 0.34);
+}
+
 .subscriptions-page table {
   width: 100%;
-  border-collapse: collapse;
+  min-width: 860px;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-top: 20px;
 }
 
 .subscriptions-page th,
 .subscriptions-page td {
-  border: 1px solid #ddd;
-  padding: 12px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  padding: 13px 14px;
   text-align: left;
 }
 
 .subscriptions-page th {
-  background-color: #f2f2f2;
-  font-weight: bold;
+  background: rgba(37, 99, 235, 0.16);
+  color: var(--muted-strong);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.subscriptions-page td {
+  background: rgba(9, 9, 11, 0.24);
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.subscriptions-page tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.subscriptions-page tr:hover td {
+  background: rgba(37, 99, 235, 0.12);
+}
+
+.subscriptions-page tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .subscription-input {
