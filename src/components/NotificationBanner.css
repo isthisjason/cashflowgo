@@ -15,21 +15,39 @@
 }
 
 .notification-banner.info {
-  background: linear-gradient(120deg, #153e75, #1f6feb);
+  border-color: rgba(96, 165, 250, 0.34);
+  background: rgba(37, 99, 235, 0.16);
 }
 
 .notification-banner.success {
-  background: linear-gradient(120deg, #0f7f49, #0f9d58);
+  border-color: rgba(34, 197, 94, 0.34);
+  background: var(--success-soft);
 }
 
 .notification-banner.error {
-  background: linear-gradient(120deg, #a61e1e, #c62828);
+  border-color: rgba(239, 68, 68, 0.34);
+  background: var(--danger-soft);
+  color: #fca5a5;
 }
 
 .notification-banner button {
-  border: none;
-  background: transparent;
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  min-height: 28px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
   color: inherit;
   font-size: 1rem;
   cursor: pointer;
+}
+
+.notification-banner button:hover {
+  border-color: var(--border-strong);
+}
+
+.notification-banner button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring);
 }
