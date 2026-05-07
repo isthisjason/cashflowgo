@@ -121,7 +121,9 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
               amount: e.target.value
             })}
           />
+          <label htmlFor="subscription-email">Notification Email</label>
           <input
+            id="subscription-email"
             type="email"
             placeholder="Notification Email"
             value={newSubscription.email}
@@ -130,7 +132,9 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
               email: e.target.value
             })}
           />
+          <label htmlFor="subscription-start-date">Start Date</label>
           <input
+            id="subscription-start-date"
             type="date"
             placeholder="Start Date"
             value={newSubscription.startDate}
@@ -139,7 +143,9 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
               startDate: e.target.value
             })}
           />
+          <label htmlFor="subscription-expiry-date">Expiry Date</label>
           <input
+            id="subscription-expiry-date"
             type="date"
             placeholder="Expiry Date"
             value={newSubscription.expiryDate}
@@ -148,7 +154,9 @@ function SubscriptionManager({ profile }) { // Profile passed as a prop
               expiryDate: e.target.value
             })}
           />
+          <label htmlFor="subscription-reminder-days">Reminder</label>
           <select
+            id="subscription-reminder-days"
             value={newSubscription.reminderDays}
             onChange={(e) => setNewSubscription({
               ...newSubscription,
