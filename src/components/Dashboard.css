@@ -236,6 +236,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .dashboard-content {
+    animation: none;
+  }
+
   .floating-button {
     transition: none;
   }

@@ -50,6 +50,14 @@
   transform: translateY(-1px);
 }
 
+.navbar-links a:focus-visible,
+.profile-dropdown select:focus-visible,
+.navbar-button:focus-visible,
+.logout-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--ring);
+}
+
 .profile-dropdown select {
   background: rgba(255, 255, 255, 0.14);
   color: #fff;
@@ -113,5 +121,19 @@
 
   .navbar-links {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navbar-links a,
+  .navbar-button,
+  .logout-button {
+    transition: none;
+  }
+
+  .navbar-links a:hover,
+  .navbar-button:hover,
+  .logout-button:hover {
+    transform: none;
   }
 }
