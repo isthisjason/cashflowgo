@@ -14,13 +14,6 @@ function TransactionsPage({ profile }) {
   useEffect(() => {
     const fetchTransactions = async () => {
       try {
-        const loggedInUser = localStorage.getItem('loggedInUser');
-        if (!loggedInUser) {
-          console.error('User is not logged in. Redirecting...');
-          navigate('/login');
-          return;
-        }
-
         console.log(`Fetching all transactions for profile: ${profile}...`);
         const response = await axios.get('/finances/transactionspage/all/', {
           params: { profile_type: profile.toLowerCase() },

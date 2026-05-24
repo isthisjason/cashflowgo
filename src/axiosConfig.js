@@ -1,17 +1,30 @@
 import axios from 'axios';
 import { tryOfflineMock } from './offlineApi';
 
-// Utility function to get CSRF token from cookies
+let csrfTokenCache = null;
+
+const cacheCSRFToken = (token) => {
+  if (token) {
+    csrfTokenCache = token;
+  }
+};
+
+// Utility function to get CSRF token from cookies when the browser exposes it.
 export const getCSRFToken = () => {
+  if (csrfTokenCache) {
+    return csrfTokenCache;
+  }
+
   const name = 'csrftoken';
   const cookies = document.cookie.split(';');
   for (let i = 0; i < cookies.length; i++) {
     const cookie = cookies[i].trim();
     if (cookie.startsWith(name + '=')) {
-      return cookie.substring(name.length + 1);
+      csrfTokenCache = cookie.substring(name.length + 1);
+      return csrfTokenCache;
     }
   }
-  return null; // Return null if CSRF token is not found
+  return null;
 };
 
 // Initialize Axios instance
@@ -27,9 +40,7 @@ axiosInstance.interceptors.request.use(
   (config) => {
     const csrfToken = getCSRFToken();
     if (csrfToken) {
-      config.headers['X-CSRFToken'] = csrfToken; // Dynamically add CSRF token to headers
-    } else {
-      console.error('CSRF token not found. Ensure the backend sets the csrftoken cookie.');
+      config.headers['X-CSRFToken'] = csrfToken;
     }
     return config;
   },
@@ -41,7 +52,10 @@ axiosInstance.interceptors.request.use(
 
 // Add a response interceptor to handle API errors
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    cacheCSRFToken(response.data?.csrf_token);
+    return response;
+  },
   (error) => {
     const fallbackEnabled = process.env.REACT_APP_ENABLE_OFFLINE_FALLBACK === '1';
     if (fallbackEnabled && error?.config && !error.response) {
@@ -65,10 +79,5 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Log a warning during initialization if CSRF token is missing
-if (!getCSRFToken()) {
-  console.error('CSRF token not found during initialization. This might cause issues with POST/PUT requests.');
-}
 
 export default axiosInstance;

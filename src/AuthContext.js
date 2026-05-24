@@ -8,10 +8,12 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const response = await axios.get('/auth/check'); // Adjust the endpoint as per your backend
-      setIsAuthenticated(response.data.isAuthenticated);
+      const response = await axios.get('/accounts/check-authentication/');
+      setIsAuthenticated(Boolean(response.data?.is_authenticated));
     } catch (error) {
-      console.error('Authentication check failed:', error);
+      if (error.response?.status !== 401) {
+        console.error('Authentication check failed:', error);
+      }
       setIsAuthenticated(false);
     }
   };

@@ -22,15 +22,14 @@ function App() {
       try {
         await axios.get('/accounts/csrf/');
         const authResponse = await axios.get('/accounts/check-authentication/');
-        if (authResponse.data?.is_authenticated) {
-          setIsAuthenticated(true);
+        setIsAuthenticated(Boolean(authResponse.data?.is_authenticated));
+      } catch (error) {
+        if (error.response?.status === 401) {
+          setIsAuthenticated(false);
           return;
         }
-        setIsAuthenticated(false);
-      } catch (error) {
         console.error('Error during auth bootstrap:', error.response?.data || error.message);
-        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-        setIsAuthenticated(Boolean(loggedInUser));
+        setIsAuthenticated(false);
       }
     };
 

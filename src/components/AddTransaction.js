@@ -50,12 +50,7 @@ function AddTransaction({ profile, onAddTransaction, isModalOpen, onClose, onNot
       if (onAddTransaction) {
         response = await onAddTransaction(transactionData);
       } else {
-        response = await axios.post('/finances/add-transaction/', transactionData, {
-          headers: {
-            'X-CSRFToken': document.cookie.match(/csrftoken=([\w-]+)/)?.[1],
-          },
-          withCredentials: true,
-        });
+        response = await axios.post('/finances/add-transaction/', transactionData);
       }
 
       console.log('Transaction added successfully:', response?.data || response);

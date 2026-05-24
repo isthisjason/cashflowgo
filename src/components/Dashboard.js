@@ -6,7 +6,6 @@ import SummaryChart from './SummaryChart';
 import AddTransaction from './AddTransaction';
 import SpendingHabits from './SpendingHabits';
 import NotificationBanner from './NotificationBanner';
-import { getCSRFToken } from '../axiosConfig';
 import './Dashboard.css';
 
 function Dashboard({ profile, setIsAuthenticated }) {
@@ -29,13 +28,6 @@ function Dashboard({ profile, setIsAuthenticated }) {
   // Fetch transactions and financial data
   const fetchData = useCallback(async () => {
     setIsLoading(true);
-
-    if (!localStorage.getItem('loggedInUser')) {
-      console.error('User is not logged in.');
-      setIsAuthenticated(false);
-      setIsLoading(false);
-      return;
-    }
 
     try {
       const transactionsResponse = await axios.get('/finances/transactionspage/all/', {
@@ -96,10 +88,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
 
       try {
         console.log('Starting transaction submission');
-        const response = await axios.post(`/finances/add-transaction/`, newTransaction, {
-          headers: { 'X-CSRFToken': getCSRFToken() },
-          withCredentials: true,
-        });
+        const response = await axios.post(`/finances/add-transaction/`, newTransaction);
 
         console.log('Transaction submitted successfully');
 
@@ -126,14 +115,7 @@ function Dashboard({ profile, setIsAuthenticated }) {
     }));
 
     try {
-      await axios.patch(
-        `/finances/adjusted-income/${profile.toLowerCase()}/`,
-        { adjusted_income: newIncome },
-        {
-          headers: { 'X-CSRFToken': getCSRFToken() },
-          withCredentials: true,
-        }
-      );
+      await axios.patch(`/finances/adjusted-income/${profile.toLowerCase()}/`, { adjusted_income: newIncome });
       console.log('Income updated successfully');
     } catch (error) {
       console.error('Error updating income:', error.response?.data || error.message);

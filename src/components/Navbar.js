@@ -1,29 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import axios from '../axiosConfig'; // Import the axios instance
-import { getCSRFToken } from '../axiosConfig'; // Import the CSRF token function
+import BudgetAlert from './BudgetAlert';
 import './Navbar.css';
 
 function Navbar({ profile, switchProfile, onLogout, showBudgetAlert, toggleBudgetAlert }) {
-  const handleLogout = async () => {
-    try {
-      const csrfToken = getCSRFToken(); // Fetch the CSRF token
-
-      // Perform the logout request
-      await axios.post('/accounts/logout/', {}, {
-        headers: {
-          'X-CSRFToken': csrfToken, // Include the CSRF token in the headers
-        },
-        withCredentials: true, // Ensure cookies are sent with the request
-      });
-
-      console.log('User logged out successfully');
-      onLogout(); // Call the logout function passed as a prop to update the app state
-    } catch (error) {
-      console.error('Logout failed:', error.response?.data || error.message);
-    }
-  };
-
   return (
     <div className="navbar-container">
       <nav className="navbar" aria-label="Main Navigation">
@@ -62,7 +42,7 @@ function Navbar({ profile, switchProfile, onLogout, showBudgetAlert, toggleBudge
             Budget Alerts
           </button>
           <button
-            onClick={handleLogout}
+            onClick={onLogout}
             className="logout-button"
             role="menuitem"
             aria-label="Logout"

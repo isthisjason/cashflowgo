@@ -112,7 +112,10 @@ def get_csrf_token(request):
     """
     Provides a CSRF token to the frontend.
     """
-    return Response({"message": "CSRF token set successfully."})
+    return Response({
+        "message": "CSRF token set successfully.",
+        "csrf_token": get_token(request),
+    })
 
 @api_view(['GET'])
 def check_authentication(request):

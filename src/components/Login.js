@@ -23,12 +23,6 @@ function Login({ onLogin }) {
       localStorage.setItem('loggedInUser', JSON.stringify(response.data.user));
       console.log('Logged in user saved:', localStorage.getItem('loggedInUser'));
 
-      const csrfToken = response.data.csrf_token;
-      if (csrfToken) {
-        document.cookie = `csrftoken=${csrfToken}; path=/`;
-        console.log('CSRF token set:', csrfToken);
-      }
-
       if (onLogin) onLogin();
 
       console.log('Redirecting to dashboard');
