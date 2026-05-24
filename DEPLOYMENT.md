@@ -1,77 +1,102 @@
-# Deployment Guide (Cloudflare Frontend + Render Backend)
+# Deployment Guide: Cloudflare Frontend + Render Backend
 
-This guide is designed for a simple deployment path with minimal changes to project behavior.
+This is the active low-cost demo deployment path for CashFlowGo.
 
-## 1) Pre-Deploy Checklist
+- Cloudflare Pages hosts the React build.
+- Render hosts the Django API.
+- AWS deployment docs remain in `docs/` as legacy/reference material.
 
-- Ensure local app runs successfully:
-  - `python manage.py migrate`
-  - `npm ci`
-  - `npm run dev`
-- Commit latest migrations
-- Commit the latest `package-lock.json` if frontend dependencies changed
-- Set production environment variables
+## 1) Render Backend
 
-## 2) Required Environment Variables
+This repo includes `render.yaml` for the backend service.
 
-Backend (Django):
-
-- `DJANGO_SECRET_KEY` (required in production)
-- `DJANGO_DEBUG=false`
-- `DJANGO_ALLOWED_HOSTS` (comma-separated)
-- `CORS_ALLOWED_ORIGINS` (comma-separated, include Cloudflare frontend URL)
-- `CSRF_TRUSTED_ORIGINS` (comma-separated, include Cloudflare frontend URL)
-- `DATABASE_URL` (Render Postgres connection string)
-
-Frontend:
-
-- `REACT_APP_API_BASE_URL` (set to your deployed API URL + `/api`)
-- `REACT_APP_ENABLE_OFFLINE_FALLBACK=0` (recommended in production)
-
-## 3) Render Backend Deployment
-
-This repo includes `render.yaml` as a starting point.
-
-Typical flow:
-
-1. Push repo to GitHub
-2. Create a new Render Blueprint from repo
-3. In Render, set:
-   - `DJANGO_SECRET_KEY` (secure random value)
+1. Push the repo to GitHub.
+2. In Render, create a Blueprint or Web Service from the repo.
+3. Use these backend settings:
+   - Build command: `pip install -r requirements.txt && python manage.py collectstatic --noinput`
+   - Start command: `python manage.py migrate && gunicorn cashflowgo.wsgi --bind 0.0.0.0:$PORT`
+4. Set Render environment variables:
+   - `DJANGO_SECRET_KEY=<long-random-secret>`
    - `DJANGO_DEBUG=false`
-   - `DJANGO_ALLOWED_HOSTS` to your Render host (and custom API host if any)
-   - `CORS_ALLOWED_ORIGINS` to Cloudflare frontend URL(s)
-   - `CSRF_TRUSTED_ORIGINS` to Cloudflare frontend URL(s)
-4. Deploy and verify backend endpoint:
-   - `https://<your-render-host>/api/accounts/csrf/`
+   - `DJANGO_ALLOWED_HOSTS=cashflowgo-backend.onrender.com`
+   - `CORS_ALLOWED_ORIGINS=https://<cloudflare-pages-domain>`
+   - `CSRF_TRUSTED_ORIGINS=https://<cloudflare-pages-domain>`
+   - `EMAIL_NOTIFICATIONS_ENABLED=false`
 
-## 4) Cloudflare Pages Frontend Deployment
+Leave `DATABASE_URL` unset for a no-cost demo deployment. Django will use SQLite on Render's filesystem, which is not a durable production database. For persistent data, add Render Postgres or another Postgres provider and set `DATABASE_URL`.
 
-1. In Cloudflare Pages, connect this GitHub repo.
-2. Build settings:
-   - Framework preset: `Create React App`
-   - Build command: `npm run build`
-   - Build output directory: `build`
-3. Add frontend environment variable:
-   - `REACT_APP_API_BASE_URL=https://<your-render-host>/api`
-   - `REACT_APP_ENABLE_OFFLINE_FALLBACK=0`
-4. Deploy.
+Verify the backend:
+
+```bash
+curl -i https://cashflowgo-backend.onrender.com/api/accounts/csrf/
+```
+
+Expected response includes `HTTP 200` and a JSON `csrf_token`.
+
+## 2) Cloudflare Pages Frontend
+
+The restored deploy command builds the React app and publishes `build/` to Cloudflare Pages:
+
+```bash
+npm run deploy
+```
+
+Defaults used by the script:
+
+```text
+RENDER_API_BASE_URL=https://cashflowgo-backend.onrender.com/api
+CLOUDFLARE_PAGES_PROJECT=cashflowgo
+```
+
+Override them when needed:
+
+```bash
+RENDER_API_BASE_URL=https://<render-backend-host>/api \
+CLOUDFLARE_PAGES_PROJECT=<cloudflare-pages-project> \
+npm run deploy
+```
+
+The script sets:
+
+```text
+REACT_APP_API_BASE_URL=$RENDER_API_BASE_URL
+REACT_APP_ENABLE_OFFLINE_FALLBACK=0
+```
+
+If you deploy through Cloudflare's Git integration instead of `npm run deploy`, use:
+
+```text
+Build command: npm run build
+Build output directory: build
+```
+
+Set these Cloudflare Pages environment variables:
+
+```text
+REACT_APP_API_BASE_URL=https://cashflowgo-backend.onrender.com/api
+REACT_APP_ENABLE_OFFLINE_FALLBACK=0
+```
 
 The `public/_redirects` file is included so React routes work on hard refresh.
 
-## 5) Post-Deploy Verification
+## 3) Post-Deploy Verification
 
-- `/api/accounts/csrf/` returns success
-- Login works and sets session cookie
-- Add transaction works
-- Income slider update works
-- Budget and subscriptions endpoints respond
+Check:
 
-## 6) Common Issues
+- Cloudflare Pages URL loads.
+- `/login` loads directly after hard refresh.
+- `/api/accounts/csrf/` on Render returns `200` and a `csrf_token`.
+- Signup, login, logout, dashboard fetches, add transaction, budget, subscriptions, and CSV download work.
+- Browser console has no CORS, CSRF, session, or stale API URL errors.
 
-- `ModuleNotFoundError: django`:
-  - Ensure build/install command includes `pip install -r requirements.txt`
-- CORS/CSRF issues:
-  - Update `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS` to deployed Cloudflare domain
-- Backend unreachable from frontend:
-  - Verify `REACT_APP_API_BASE_URL` points to correct deployed backend URL
+## 4) Common Issues
+
+- CORS or CSRF errors:
+  - Confirm the exact Cloudflare Pages URL is in both `CORS_ALLOWED_ORIGINS` and `CSRF_TRUSTED_ORIGINS`.
+  - Include the scheme, for example `https://cashflowgo.pages.dev`.
+- Frontend fetches localhost or AWS:
+  - Rebuild/redeploy with `REACT_APP_API_BASE_URL=https://cashflowgo-backend.onrender.com/api`.
+- Login works but data disappears:
+  - `DATABASE_URL` is unset, so Render is using demo-only SQLite storage.
+- First request is slow:
+  - Render free services spin down after inactivity and need time to wake up.

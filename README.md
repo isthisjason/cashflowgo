@@ -95,9 +95,9 @@ Key vars:
 
 ## Deployment
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for a step-by-step Cloudflare Pages + Render deployment guide.
+The recommended low-cost demo deployment is Cloudflare Pages for the React frontend and Render for the Django backend. See [DEPLOYMENT.md](./DEPLOYMENT.md).
 
-See [docs/AWS_DEPLOYMENT.md](./docs/AWS_DEPLOYMENT.md) for the AWS scaffold using Docker, PostgreSQL/RDS, and S3 + CloudFront or Amplify for the frontend.
+AWS deployment remains documented as the legacy expanded architecture. See [docs/AWS_DEPLOYMENT.md](./docs/AWS_DEPLOYMENT.md), [docs/AWS_REDEPLOY.md](./docs/AWS_REDEPLOY.md), and [docs/S3_CLOUDFRONT.md](./docs/S3_CLOUDFRONT.md).
 
 ## Core Flows Checklist
 
