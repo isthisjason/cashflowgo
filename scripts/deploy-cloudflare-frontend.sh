@@ -10,6 +10,6 @@ REACT_APP_ENABLE_OFFLINE_FALLBACK=0 \
 npm run build
 
 echo "Deploying build/ to Cloudflare Pages project ${CLOUDFLARE_PAGES_PROJECT}"
-npx wrangler pages deploy build --project-name "${CLOUDFLARE_PAGES_PROJECT}"
+npx --yes wrangler pages deploy build --project-name "${CLOUDFLARE_PAGES_PROJECT}"
 
 echo "Frontend deployed to Cloudflare Pages."
