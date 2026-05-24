@@ -1,4 +1,6 @@
-# AWS Deployment
+# Legacy AWS Deployment
+
+This document records the former AWS deployment architecture for project history and reference. The active low-cost demo deployment is Cloudflare Pages for the frontend and Render for the backend; see [../DEPLOYMENT.md](../DEPLOYMENT.md).
 
 CashFlowGo is deployed on AWS with one public CloudFront domain:
 

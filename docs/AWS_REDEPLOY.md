@@ -1,4 +1,6 @@
-# AWS Redeploy Workflow
+# Legacy AWS Redeploy Workflow
+
+This document records the former AWS redeploy workflow for project history and reference. The active low-cost demo deployment uses `npm run deploy` for Cloudflare Pages and Render for the backend; see [../DEPLOYMENT.md](../DEPLOYMENT.md).
 
 Use this guide after making changes to CashFlowGo. AWS deploys are split by what changed.
 

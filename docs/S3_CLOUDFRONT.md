@@ -1,4 +1,6 @@
-# S3 + CloudFront Frontend Deployment
+# Legacy S3 + CloudFront Frontend Deployment
+
+This document records the former AWS frontend hosting setup for project history and reference. The active low-cost demo frontend deployment is Cloudflare Pages; see [../DEPLOYMENT.md](../DEPLOYMENT.md).
 
 This checklist deploys the CashFlowGo React frontend to AWS using S3 for static files and CloudFront as the public CDN/HTTPS entrypoint.
 
