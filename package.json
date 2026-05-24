@@ -21,6 +21,7 @@
     "dev": "node scripts/dev.js",
     "dev:frontend": "react-scripts start",
     "dev:backend": "python3 manage.py runserver",
+    "deploy": "bash scripts/deploy-cloudflare-frontend.sh",
     "deploy:aws:frontend": "bash scripts/deploy-aws-frontend.sh",
     "deploy:aws:backend": "bash scripts/deploy-aws-backend.sh",
     "start": "npm run dev",
